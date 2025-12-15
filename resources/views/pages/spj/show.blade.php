@@ -136,7 +136,7 @@
                                     <label class="form-check-label ms-2">{{ $file->alasan }}</label>
                                 </td>
                                 <td>
-                                    @if (!empty($pdfFiles))
+                                    @if (isset($pdfFiles[$loop->index]))
                                         <a href="{{ route('spj.pdf', [$spj->id, $loop->index]) }}" target="_blank"
                                             class="btn btn-sm btn-success">
                                             <i class="fas fa-file-pdf"></i> Lihat PDF
@@ -145,8 +145,6 @@
                                         <span class="text-muted">Tidak ada file</span>
                                     @endif
                                 </td>
-
-
                             </tr>
                         @endforeach
                     </tbody>
