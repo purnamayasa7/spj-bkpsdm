@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Spj;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 
 class SpjFileController extends Controller
 {
@@ -21,18 +20,24 @@ class SpjFileController extends Controller
         $folder = "/home/ppispj/spj_uploads/spj/{$spj->kode}";
 
         if (!is_dir($folder)) {
-            abort(404);
+            abort(404, 'Folder not found');
         }
 
         $files = glob($folder . '/*.pdf');
 
-        if (!$files || !isset($files[$index])) {
-            abort(404);
+        if (empty($files)) {
+            abort(404, 'No PDF files found');
+        }
+
+        $index = (int) $index;
+
+        if (!array_key_exists($index, $files)) {
+            abort(404, 'File not found');
         }
 
         return response()->file($files[$index], [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline'
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'inline',
         ]);
     }
 }
