@@ -21,7 +21,7 @@ class SpjFileController extends Controller
         }
 
         // 4️⃣ Absolute Linux upload path
-        $folder = "/home/ppispj/spj_uploads/spj/{$spj->kode}";
+        $folder = "/home/ppispj/spj_uploads/{$spj->kode}";
 
         if (!is_dir($folder)) {
             abort(404);
