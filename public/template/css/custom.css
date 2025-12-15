@@ -1,0 +1,231 @@
+.bg-gradient-primary {
+    background-color: #2a4574 !important;
+    background-image: none !important;
+}
+
+.dropdown-list .dropdown-header {
+    background: linear-gradient(135deg, #2a4574 0%, #3b5a97 60%, #4c6fc1 100%) !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.count-up {
+    transition: all 1.9s ease;
+}
+
+/* .text-primary {
+    color: #2a4574 !important;
+} */
+
+/* Sidebar background */
+.bg-gradient-primary {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-right: 1px solid #e4e7ed;
+}
+
+/* Brand Title */
+.sidebar .sidebar-brand {
+    color: #2a4574 !important;
+}
+
+/* Menu text */
+.sidebar .nav-item .nav-link {
+    color: #2c3e50 !important;
+    display: block;
+    border-radius: 10px;
+}
+
+.sidebar .nav-item .nav-link i {
+    color: #2a4574 !important;
+}
+
+/* Hover menu */
+.sidebar .nav-item .nav-link:hover {
+    background-color: #e8f0fe !important;
+    border-radius: 10px;
+}
+
+/* Hover icon */
+.sidebar .nav-item .nav-link:hover i {
+    color: #2a4574 !important;
+}
+
+/* Active menu */
+.sidebar .nav-item.active .nav-link {
+    background: linear-gradient(135deg, #2a4574 0%, #3b5a97 60%, #4c6fc1 100%) !important;
+    color: #ffffff !important;
+
+    border-left: none !important;
+    border-radius: 10px;
+
+    width: calc(100% - 12px);
+    margin: 4px auto;     /* tidak menjorok kanan */
+
+    padding-left: 18px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.10);
+}
+
+/* Active icon */
+.sidebar .nav-item.active .nav-link i {
+    color: #ffffff !important;
+}
+
+/* Divider */
+.sidebar hr.sidebar-divider {
+    border-top: 1px solid #d9dfe7;
+}
+
+/* Heading sidebar (judul grup menu) */
+.sidebar-heading {
+    color: #2a4574 !important;
+    text-transform: uppercase;
+}
+
+
+/* Navbar custom (gradient + shadow) */
+.navbar-custom {
+    background: linear-gradient(135deg, #2a4574 0%, #3b5a97 60%, #4c6fc1 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Warna teks dan icon navbar */
+.navbar-custom .nav-link,
+.navbar-custom .navbar-brand,
+.navbar-custom .topbar-divider {
+    color: #ffffff !important;
+}
+
+.navbar-custom .nav-link i {
+    color: #ffffff !important;
+}
+
+/* Button search tetap putih */
+.navbar-custom .navbar-search .btn {
+    background-color: #ffffff !important;
+    border-color: #ffffff00 !important;
+}
+
+.navbar-custom .navbar-search .btn i {
+    color: #2a4574 !important;
+}
+
+.navbar-custom .navbar-search input {
+    background-color: #ffffff33 !important;
+    color: #ffffff !important;
+}
+
+/* Dropdown (profil & notifikasi) biar kontras */
+.navbar-custom .dropdown-menu {
+    border: none;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Placeholder input search jadi putih */
+.navbar-custom .navbar-search input::placeholder {
+    color: #f8fafb !important;
+    opacity: 1 !important;
+}
+
+/* Warna nama user pada navbar */
+.navbar-custom .nav-link .text-gray-600 {
+    color: #f8fafb !important;
+    opacity: 1 !important;
+}
+
+/* Toogle Sidebar */
+#sidebarToggle {
+    width: 35px !important;
+    height: 35px !important;
+    background-color: #1e3a8a !important;
+}
+
+#sidebarToggle:hover {
+    background-color: #3b82f6 !important;
+}
+
+#accordionSidebar {
+     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.toggled #accordionSidebar {
+    width: 80px !important;
+}
+
+.pagination svg {
+    display: none !important;
+}
+
+/* Ketika sidebar di-collapse (mode toggled) */
+.sidebar.toggled .collapse-inner {
+    width: 100% !important;
+    padding: 0.25rem 0.5rem !important;
+    overflow: hidden !important;
+}
+
+.sidebar.toggled .collapse-item {
+    white-space: normal !important; /* biar teks ikut melipat */
+    font-size: 0; /* sembunyikan teks */
+}
+
+.sidebar.toggled .collapse-item::before {
+    content: '' !important; /* cegah bullet aneh */
+}
+
+.sidebar.toggled .collapse.show {
+    display: none !important; /* cegah keluar ke kanan */
+}
+
+
+/* Chart Activity Dashboard */
+.activity-scroll {
+    max-height: 320px;      /* agar tingginya tidak mengubah chart */
+    overflow-y: auto;       /* scroll */
+}
+
+.activity-item {
+    min-height: 42px;       /* tinggi setiap row konsisten */
+}
+
+.activity-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;         /* mencegah melebar saat screen kecil */
+}
+
+/* Collape Menu */
+/* Arrow warna biru ketika menu TIDAK aktif */
+.sidebar .nav-item .nav-link.collapsed::after {
+    color: #2a4574 !important; /* biru elegan */
+}
+
+/* Arrow warna putih ketika menu AKTIF */
+.sidebar .nav-item.active .nav-link::after {
+    color: #2a4574 !important;
+}
+
+/* Arrow biru ketika COLLAPSE TERBUKA (walau tidak ada kelas active) */
+.sidebar .nav-item .collapse.show ~ .nav-link::after,
+.sidebar .nav-item .nav-link[aria-expanded="true"]::after {
+    color: #2a4574 !important;
+}
+
+.sidebar .collapse-inner {
+    background: #e9ecef; 
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #cfd4da;
+}
+
+.sidebar .collapse-item {
+    padding: 8px 15px;
+    border-radius: 6px;
+}
+
+.sidebar .collapse-item:hover {
+    background: #d6d9dc;
+}
+
+
+
