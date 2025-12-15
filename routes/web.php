@@ -9,6 +9,7 @@ use App\Http\Controllers\KelengkapanController;
 use App\Http\Controllers\SpjController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SpjFileController;
 use App\Models\Kelengkapan;
 use App\Models\Spj;
 use Illuminate\Routing\RouteRegistrar;
@@ -58,6 +59,7 @@ Route::get('/calendar/spj', [CalendarController::class, 'index'])->name('calenda
 Route::get('/calendar/spj/events', [CalendarController::class, 'events'])->name('calendar.events');
 
 
+
 /*
 | Route SPJ - Keuangan
 */
@@ -99,6 +101,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/notifications/{id}/open', [NotificationController::class, 'open'])->name('notifications.open');
+    Route::get('/spj/pdf/{spj}/{index}', [SpjFileController::class, 'view'])->name('spj.pdf');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

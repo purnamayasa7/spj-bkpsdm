@@ -136,8 +136,13 @@
                                     <label class="form-check-label ms-2">{{ $file->alasan }}</label>
                                 </td>
                                 <td>
-                                    @if ($file->file_path)
-                                        <a href="{{ asset('uploads/' . $file->file_path) }}" target="_blank"
+                                    @php
+                                        $folder = "/home/ppispj/spj_uploads/spj/{$spj->kode}";
+                                        $files = is_dir($folder) ? glob($folder . '/*.pdf') : [];
+                                    @endphp
+
+                                    @if (!empty($files) && isset($files[$index]))
+                                        <a href="{{ route('spj.pdf', [$spj->id, $index]) }}" target="_blank"
                                             class="btn btn-sm btn-success">
                                             <i class="fas fa-file-pdf"></i> Lihat PDF
                                         </a>
@@ -145,6 +150,7 @@
                                         <span class="text-muted">Tidak ada file</span>
                                     @endif
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
