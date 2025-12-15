@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/notifications/{id}/open', [NotificationController::class, 'open'])->name('notifications.open');
-    Route::get('/spj/pdf/{spj}/{index}', [SpjFileController::class, 'view'])->name('spj.pdf');
+    Route::get('spj/{id}/pdf/{index}', [SpjFileController::class, 'view'])->name('spj.pdf');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
