@@ -110,7 +110,7 @@ class SpjController extends Controller
                     $spjId = $spj->id;
 
                     // Buat folder berdasarkan ID SPJ
-                    $folderPath = "uploads/spj/{$spjId}";
+                    $folderPath = "spj/{$spjId}";
 
                     // Buat nama file unik (bisa tambahkan timestamp)
                     $filename = Str::slug($namaDokumen) . '_' . time() . '.' . $file->getClientOriginalExtension();
@@ -225,7 +225,7 @@ class SpjController extends Controller
                         $file = $request->file("kelengkapan.$kelengkapanId.file_path");
                         $timestamp = now()->timestamp;
                         $filename = strtolower(str_replace(' ', '_', $kelengkapan->nama_dokumen)) . "_{$timestamp}.pdf";
-                        $path = $file->storeAs("uploads/spj/{$spj->id}", $filename, 'public');
+                        $path = $file->storeAs("spj/{$spj->id}", $filename, 'public');
 
                         // Hapus old lama
                         if ($kelengkapan->file_path && Storage::disk('public')->exists($kelengkapan->file_path)) {
@@ -259,7 +259,7 @@ class SpjController extends Controller
                     $filename = strtolower(str_replace(' ', '_', $namaDokumen))
                         . "_" . now()->timestamp . ".pdf";
 
-                    $path = $file->storeAs("uploads/spj/{$spj->id}", $filename, 'public');
+                    $path = $file->storeAs("spj/{$spj->id}", $filename, 'public');
 
                     Kelengkapan::create([
                         'spj_id' => $spj->id,
@@ -510,7 +510,7 @@ class SpjController extends Controller
 
     public function downloadZip($id)
     {
-        $folderPath = public_path('uploads/uploads/spj/' . $id);
+        $folderPath = public_path('uploads/spj/' . $id);
 
         if (!file_exists($folderPath)) {
             return back()->with('error', 'Dokumen SPJ tidak ditemukan.');
