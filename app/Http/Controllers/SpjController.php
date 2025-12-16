@@ -122,7 +122,7 @@ class SpjController extends Controller
                     Kelengkapan::create([
                         'spj_id' => $spjId,
                         'nama_dokumen' => $namaDokumen,
-                        'file_path' => str_replace('public/', '', $path),
+                        'file_path' => $path,
                         'status' => 'Belum Diverifikasi',
                         'alasan' => '-',
                         'upload_by' => Auth::user()->name,
@@ -393,12 +393,12 @@ class SpjController extends Controller
             ));
         }
 
-        if ($spj->status == 'Disetujui'){
+        if ($spj->status == 'Disetujui') {
             logActivity('Approve', "Menyetujui SPJ ID {$spj->id}", 'spj');
-        }elseif ($spj->status == 'Dikoreksi') {
+        } elseif ($spj->status == 'Dikoreksi') {
             logActivity('Update', "Merevisi SPJ ID {$spj->id}", 'spj');
         }
-        
+
         return redirect()->route('spj.keuangan.index')->with('success', 'Review SPJ berhasil disimpan.');
     }
 
@@ -510,19 +510,19 @@ class SpjController extends Controller
 
     public function downloadZip($id)
     {
-        $folderPath = public_path('uploads/spj/' . $id);
+        $folderPath = storage_path('app/public/spj/' . $id);
 
-        if (!file_exists($folderPath)) {
+        if (!is_dir($folderPath)) {
             return back()->with('error', 'Dokumen SPJ tidak ditemukan.');
         }
 
-        $files = glob($folderPath . '/*');
+        $files = glob($folderPath . '/*.pdf');
         if (empty($files)) {
             return back()->with('error', 'Dokumen SPJ masih kosong.');
         }
 
-        $zipFileName = 'spj-' . $id . '.zip';
-        $zipPath = public_path('uploads/' . $zipFileName);
+        $zipFileName = "spj-{$id}.zip";
+        $zipPath = storage_path("app/public/{$zipFileName}");
 
         if (file_exists($zipPath)) {
             unlink($zipPath);
