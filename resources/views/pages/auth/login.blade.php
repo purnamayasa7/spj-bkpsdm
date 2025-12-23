@@ -15,29 +15,10 @@
 	 body {
         background-color: #f4f6f9;
     }
-
-	#snow {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none
-        z-index: 0;
-    }
-
-    .login-container {
-        position: relative;
-        z-index: 1;
-    }
-
 </style>
-
-<canvas id="snow"></canvas>
-
 <body>
 	<section class="h-100">
-		<div class="container h-100 login-container">
+		<div class="container h-100">
 			<div class="row justify-content-sm-center h-100">
 				<div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
 					<div class="text-center mb-2 mt-5">
@@ -117,59 +98,6 @@
         });
         @endif
     });
-
-	//Snow Effect
-	const canvas = document.getElementById('snow');
-    const ctx = canvas.getContext('2d');
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
-
-    const flakes = [];
-
-    class Snowflake {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.r = Math.random() * 4 + 1;
-            this.d = Math.random() + 1;
-        }
-
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255,255,255,0.8)';
-            ctx.fill();
-        }
-    }
-
-    function createSnowflakes() {
-        for (let i = 0; i < 100; i++) {
-            flakes.push(new Snowflake());
-        }
-    }
-
-    function drawSnow() {
-        ctx.clearRect(0, 0, width, height);
-        for (let flake of flakes) {
-            flake.draw();
-            flake.y += flake.d;
-            if (flake.y > height) {
-                flake.y = 0;
-                flake.x = Math.random() * width;
-            }
-        }
-        requestAnimationFrame(drawSnow);
-    }
-
-    window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    });
-
-    createSnowflakes();
-    drawSnow();
-
 </script>
 </body>
 </html>
