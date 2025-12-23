@@ -10,9 +10,6 @@
 
     <div class="card shadow mb-4">
         <div class="card-body">
-            {{-- =========================
-        FORM EDIT SPJ
-    ========================== --}}
             <form id="formSpj" action="{{ route('spj.update', $spj->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -82,9 +79,7 @@
 
                 <hr>
 
-                {{-- =========================
-          KELENGKAPAN DOKUMEN
-      ========================== --}}
+                {{-- Kelengkapan Dokumen --}}
                 <h5 class="mb-3 text-primary">Kelengkapan Dokumen</h5>
 
                 <div class="table-responsive">
@@ -129,8 +124,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <input type="file" accept="application/pdf,image/*" name="kelengkapan[{{ $file->id }}][file_path]"
-                                            class="form-control-file">
+                                        <input type="file" accept="application/pdf*"
+                                            name="kelengkapan[{{ $file->id }}][file_path]"
+                                            class="form-control-file file-input" data-doc="{{ $file->nama_dokumen }}">
+                                        <small class="text-danger d-none file-warning">
+                                            Ukuran file PDF melebihi dari 2 MB.
+                                        </small>
                                     </td>
                                 </tr>
                             @endforeach
@@ -154,8 +153,8 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <input type="file" name="dokumen_baru[]" class="form-control"
-                                    accept="application/pdf,image/*" required>
+                                <input type="file" name="dokumen_baru[]" class="form-control file-input"
+                                    accept="application/pdf*" data-doc="Dokumen Baru" required>
                             </div>
                             <div class="col-md-2">
                                 <button type="button" class="btn btn-danger removeDokumenBaru">
@@ -181,59 +180,90 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const MAX_SIZE = 2 * 1024 * 1024;
+            const fileInputs = document.querySelectorAll('.file-input');
             const btn = document.getElementById('btnSimpan');
-            const form = document.getElementById('formSpj'); // Pastikan id form sesuai!
+            const form = document.getElementById('formSpj');
+
+            // Warning Files > 2 MB
+            document.addEventListener('change', function(e) {
+                if (!e.target.classList.contains('file-input')) return;
+
+                const warning = e.target.nextElementSibling;
+
+                if (!e.target.files.length) {
+                    warning.classList.add('d-none');
+                    return;
+                }
+
+                if (e.target.files[0].size > MAX_SIZE) {
+                    warning.classList.remove('d-none');
+                } else {
+                    warning.classList.add('d-none');
+                }
+            });
+
 
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                // Field wajib (opsional bisa dikurangi)
+                // Validasi field wajib
                 const requiredFields = [
-                    'bidang',
-                    'jenis',
-                    'pptk',
-                    'kegiatan',
-                    'belanja',
-                    'nilai',
-                    'sumber_dana',
-                    'tanggal_spj',
-                    'tanggal_terima_spj'
+                    'bidang', 'jenis', 'pptk', 'kegiatan',
+                    'belanja', 'nilai', 'sumber_dana',
+                    'tanggal_spj', 'tanggal_terima_spj'
                 ];
 
-                // Validasi isi field
-                let emptyField = null;
                 for (const field of requiredFields) {
                     const el = document.querySelector(`[name="${field}"]`);
                     if (el && !el.value.trim()) {
-                        emptyField = field;
-                        break;
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Field belum lengkap!',
+                            text: `Mohon isi bagian "${field}" terlebih dahulu.`,
+                        });
+                        return;
                     }
                 }
 
-                if (emptyField) {
+                // Validasi file > 2 MB
+                let largeFiles = [];
+
+                document.querySelectorAll('.file-input').forEach(input => {
+                    if (input.files.length && input.files[0].size > MAX_SIZE) {
+                        largeFiles.push(input.dataset.doc || 'Dokumen');
+                    }
+                });
+
+                if (largeFiles.length > 0) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Field belum lengkap!',
-                        text: `Mohon isi bagian "${emptyField}" terlebih dahulu.`,
-                        confirmButtonColor: '#3085d6',
+                        title: 'File melebihi 2 MB',
+                        html: `
+                <p>Dokumen berikut melebihi batas ukuran:</p>
+                <ul style="text-align:left">
+                    ${largeFiles.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+                <p>Silakan unggah ulang dokumen.</p>
+            `,
+                        confirmButtonText: 'Tutup',
+                        confirmButtonColor: '#3085d6'
                     });
                     return;
                 }
 
-                // Konfirmasi sebelum update
+                // Konfirmasi update
                 Swal.fire({
                     title: 'Konfirmasi Update SPJ',
-                    text: "Apakah Anda yakin ingin menyimpan perubahan ini?",
+                    text: 'Apakah Anda yakin ingin menyimpan perubahan ini?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, simpan perubahan!',
                     cancelButtonText: 'Batal',
-                    reverseButtons: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
-                }).then((result) => {
+                    reverseButtons: true
+                }).then(result => {
                     if (result.isConfirmed) {
-                        // Alert memproses dengan auto close
                         Swal.fire({
                             title: 'Memproses...',
                             text: 'Perubahan sedang disimpan.',
