@@ -13,10 +13,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // ===== DEFAULT TAHUN =====
-        $year = date('Y');
+        $year = now()->year;
 
-        // ===== BASE QUERY =====
+        if (!in_array($year, [2025, 2026])) {
+            $year = 2025;
+        }
+
         $baseQuery = Spj::whereYear('created_at', $year);
 
         if ($user->role_id === 2) {
@@ -45,14 +47,24 @@ class DashboardController extends Controller
             DB::raw('COUNT(*) as total')
         )
             ->whereYear('created_at', $year)
-            ->when($user->role_id === 2, fn ($q) => $q->where('bidang', $user->bidang))
+            ->when($user->role_id === 2, fn($q) => $q->where('bidang', $user->bidang))
             ->groupBy(DB::raw('MONTH(created_at)'))
             ->orderBy(DB::raw('MONTH(created_at)'))
             ->get();
 
         $bulanLabels = [
-            'Januari','Februari','Maret','April','Mei','Juni',
-            'Juli','Agustus','September','Oktober','November','Desember'
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember'
         ];
 
         $rekapData = array_fill(0, 12, 0);
@@ -115,7 +127,7 @@ class DashboardController extends Controller
             DB::raw('COUNT(*) as total')
         )
             ->whereYear('created_at', $year)
-            ->when($user->role_id === 2, fn ($q) => $q->where('bidang', $user->bidang))
+            ->when($user->role_id === 2, fn($q) => $q->where('bidang', $user->bidang))
             ->groupBy(DB::raw('MONTH(created_at)'))
             ->pluck('total', 'bulan');
 
