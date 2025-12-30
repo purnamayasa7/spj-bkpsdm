@@ -2,70 +2,76 @@
 
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard - {{ $roleLabel }}</h1>
+        <h1 class="h3 mb-0 text-gray-800">Dashboard 
+            {{-- - {{ $roleLabel }} --}}
+            <small class="text-muted d-block mt-1" style="font-size: 16px">
+                {{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}
+            </small>
+        </h1>
+        <div class="form-inline">
+            <label class="mr-2 font-weight-bold text-muted">Periode Tahun</label>
+
+            <select class="form-control form-control-sm" onchange="loadDashboardData(this.value)">
+                <option value="2025" {{ $year == 2025 ? 'selected' : '' }}>2025</option>
+                <option value="2026" {{ $year == 2026 ? 'selected' : '' }}>2026</option>
+            </select>
+        </div>
     </div>
 
     <!-- CARD STATUS -->
     <div class="row">
-        <!-- Dikirim -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="mr-3">
-                        <i class="fas fa-paper-plane fa-2x text-success"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">SPJ Dikirim</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDikirim }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @php
+            $cards = [
+                [
+                    'id' => 'card-dikirim',
+                    'label' => 'SPJ Dikirim',
+                    'icon' => 'paper-plane',
+                    'color' => 'success',
+                    'value' => $totalDikirim,
+                ],
+                [
+                    'id' => 'card-dikoreksi',
+                    'label' => 'SPJ Dikoreksi',
+                    'icon' => 'edit',
+                    'color' => 'warning',
+                    'value' => $totalDikoreksi,
+                ],
+                [
+                    'id' => 'card-disetujui',
+                    'label' => 'SPJ Disetujui',
+                    'icon' => 'check-circle',
+                    'color' => 'primary',
+                    'value' => $totalDisetujui,
+                ],
+                [
+                    'id' => 'card-ditolak',
+                    'label' => 'SPJ Ditolak',
+                    'icon' => 'times-circle',
+                    'color' => 'secondary',
+                    'value' => $totalDitolak,
+                ],
+            ];
+        @endphp
 
-        <!-- Dikoreksi -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="mr-3">
-                        <i class="fas fa-edit fa-2x text-warning"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">SPJ Dikoreksi</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDikoreksi }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Disetujui -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="mr-3">
-                        <i class="fas fa-check-circle fa-2x text-primary"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">SPJ Disetujui</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDisetujui }}</div>
+        @foreach ($cards as $c)
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-{{ $c['color'] }} shadow h-100 py-2">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="mr-3">
+                            <i class="fas fa-{{ $c['icon'] }} fa-2x text-{{ $c['color'] }}"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-{{ $c['color'] }} text-uppercase mb-1">
+                                {{ $c['label'] }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="{{ $c['id'] }}">
+                                {{ $c['value'] }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Ditolak -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-2">
-                <div class="card-body d-flex align-items-center">
-                    <div class="mr-3">
-                        <i class="fas fa-times-circle fa-2x text-secondary"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">SPJ Ditolak</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDitolak }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
 
     <div class="row">
@@ -146,7 +152,7 @@
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-muted">
-                Tren Jumlah SPJ per Bulan - Tahun {{ date('Y') }}
+                Tren Jumlah SPJ per Bulan - Tahun {{ $year }}
             </h6>
         </div>
         <div class="card-body">
@@ -155,19 +161,21 @@
             </div>
             <hr>
             <span class="text-gray-800 small">
-                Menampilkan jumlah total SPJ (semua status) per bulan selama tahun {{ date('Y') }}.
+                Menampilkan jumlah total SPJ (semua status) per bulan selama tahun {{ $year }}.
             </span>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        let bulananChart = null;
+        let bidangChart = null;
+
+        /* CHART BULAN */
         const ctxBulanan = document.getElementById('rekapBulananChart');
         const dataBulanan = {!! json_encode($rekapData) !!};
-        const maxBulanan = Math.max(...dataBulanan, 0);
-        const limitBulanan = maxBulanan <= 10 ? 10 : (maxBulanan <= 20 ? 20 : Math.ceil(maxBulanan * 1.2));
 
-        new Chart(ctxBulanan, {
+        bulananChart = new Chart(ctxBulanan, {
             type: 'line',
             data: {
                 labels: {!! json_encode($bulanLabels) !!},
@@ -186,88 +194,52 @@
             options: {
                 maintainAspectRatio: false,
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Bulan'
-                        }
-                    },
                     y: {
                         beginAtZero: true,
-                        max: limitBulanan,
-                        ticks: {
-                            stepSize: 2,
-                            callback: value => value + ' SPJ'
-                        }
+                        max: Math.max(...dataBulanan, 0) + 1
                     }
                 },
                 plugins: {
                     legend: {
                         display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => `${ctx.label}: ${ctx.parsed.y} SPJ`
-                        }
                     }
                 }
             }
         });
 
+        /* BIDANG */
+        const ctxBidang = document.getElementById('rekapBidangChart');
 
-        const labels = @json($rekapBidang->pluck('bidang'));
-        const values = @json($rekapBidang->pluck('total'));
+        const initLabels = @json($rekapBidang->pluck('bidang'));
+        const initValues = @json($rekapBidang->pluck('total'));
 
-        const ctx = document.getElementById("rekapBidangChart");
-
-        new Chart(ctx, {
+        bidangChart = new Chart(ctxBidang, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: initLabels,
                 datasets: [{
                     label: "Jumlah SPJ",
-                    data: values,
-                    backgroundColor: "rgba(78, 115, 223, 0.8)", // biru SB Admin 2
+                    data: initValues,
+                    backgroundColor: "rgba(78, 115, 223, 0.8)",
                     borderColor: "rgba(78, 115, 223, 1)",
                     borderWidth: 1,
-                    hoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                    hoverBorderColor: "rgba(78, 115, 223, 1)",
-                    maxBarThickness: 40, // agar bar tidak terlalu lebar
-                }],
+                    maxBarThickness: 40,
+                }]
             },
             options: {
                 maintainAspectRatio: false,
-                animation: {
-                    duration: 1500, // durasi animasi 1,5 detik
-                    easing: 'easeOutBounce',
-                },
+                animation: false,
                 scales: {
                     y: {
                         beginAtZero: true,
-
-                        // ★ MAX Y SELALU SAMA DENGAN NILAI BAR TERTINGGI
-                        max: Math.max(...values) + 1,
+                        max: Math.max(...initValues, 0) + 1,
                         ticks: {
-                            stepSize: 1,
-                            padding: 10,
-                            font: {
-                                size: 11
-                            },
-                        },
-                        grid: {
-                            drawBorder: false,
-                            color: "rgba(234, 236, 244, 1)",
-                            zeroLineColor: "rgba(234, 236, 244, 1)",
+                            stepSize: 1
                         }
                     },
                     x: {
                         grid: {
                             display: false
-                        },
-                        ticks: {
-                            font: {
-                                size: 11
-                            },
                         }
                     }
                 },
@@ -285,8 +257,39 @@
                         padding: 10,
                         displayColors: false,
                     }
+
                 }
             }
         });
+
+        function loadDashboardData(year) {
+            fetch("{{ route('dashboard.data') }}?year=" + year)
+                .then(res => res.json())
+                .then(res => {
+
+                    document.getElementById('card-dikirim').innerText = res.cards.dikirim;
+                    document.getElementById('card-dikoreksi').innerText = res.cards.dikoreksi;
+                    document.getElementById('card-disetujui').innerText = res.cards.disetujui;
+                    document.getElementById('card-ditolak').innerText = res.cards.ditolak;
+
+                    bulananChart.data.datasets[0].data = res.bulanan;
+                    bulananChart.options.scales.y.max =
+                        Math.max(...res.bulanan, 0) + 1;
+                    bulananChart.update();
+
+                    if (res.bidang) {
+                        const labels = res.bidang.map(b => b.bidang);
+                        const values = res.bidang.map(b => b.total);
+
+                        bidangChart.data.labels = labels;
+                        bidangChart.data.datasets[0].data = values;
+                        bidangChart.options.scales.y.max =
+                            Math.max(...values, 0) + 1;
+
+                        bidangChart.update();
+                    }
+                });
+        }
     </script>
+
 @endsection
