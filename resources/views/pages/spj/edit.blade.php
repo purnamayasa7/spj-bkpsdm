@@ -124,7 +124,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <input type="file" accept="application/pdf*"
+                                        <input type="file" accept="application/pdf"
                                             name="kelengkapan[{{ $file->id }}][file_path]"
                                             class="form-control-file file-input" data-doc="{{ $file->nama_dokumen }}">
                                         <small class="text-danger d-none file-warning">

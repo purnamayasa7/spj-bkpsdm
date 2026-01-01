@@ -160,7 +160,7 @@
                                     <td>
                                         <input type="file" name="dokumen[{{ $dokumen }}]"
                                             class="form-control file-input" data-doc="{{ $dokumen }}"
-                                            accept="application/pdf*">
+                                            accept="application/pdf">
                                         <small class="text-danger d-none file-warning">
                                             Ukuran file PDF melebihi dari 2 MB.
                                         </small>

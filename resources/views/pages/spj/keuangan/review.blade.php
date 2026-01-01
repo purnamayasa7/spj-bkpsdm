@@ -18,6 +18,11 @@
     <form id="formReview" method="POST" action="{{ route('spj.keuangan.review.submit', $spj->id) }}">
         @csrf
 
+        {{-- Hidden Input --}}
+        <input type="hidden" name="action_type" id="action_type">
+        <input type="hidden" name="alasan_penolakan" id="alasan_penolakan">
+
+
         <div class="card shadow mb-4">
             <div class="card-body">
 
@@ -128,8 +133,11 @@
                 </div>
 
                 <div class="text-right mt-3">
+                    <button type="button" id="btnTolak" class="btn btn-danger">
+                        <i class="fas fa-times"></i> Tolak SPJ
+                    </button>
                     <button type="button" id="btnSimpan" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Review
+                        <i class="fas fa-save"></i> Simpan
                     </button>
                 </div>
             </div>
@@ -155,6 +163,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const btn = document.getElementById('btnSimpan');
+            const btnTolak = document.getElementById('btnTolak');
             const form = document.getElementById('formReview');
 
             btn.addEventListener('click', function(e) {
@@ -177,6 +186,44 @@
                             showConfirmButton: false,
                             allowOutsideClick: false,
                             timer: 1500,
+                            didClose: () => form.submit()
+                        });
+                    }
+                });
+            });
+
+            btnTolak.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Tolak SPJ',
+                    text: 'Silakan isi alasan penolakan SPJ',
+                    icon: 'warning',
+                    input: 'textarea',
+                    inputPlaceholder: 'Masukkan alasan penolakan SPJ...',
+                    inputAttributes: {
+                        'aria-label': 'Alasan Penolakan'
+                    },
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Alasan penolakan wajib diisi!';
+                        }
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Tolak SPJ',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#d33',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('action_type').value = 'tolak';
+                        document.getElementById('alasan_penolakan').value = result.value;
+
+                        Swal.fire({
+                            title: 'Memproses...',
+                            text: 'SPJ sedang ditolak',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            timer: 1200,
                             didClose: () => form.submit()
                         });
                     }

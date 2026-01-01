@@ -20,13 +20,22 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SpjController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $spj = Spj::where('bidang', $user->bidang)->get();
+        $year = $request->year ?? now()->year;
 
-        return view('pages.spj.index', compact('spj'));
+        if (!in_array($year, [2025, 2026])) {
+            $year = now()->year;
+        }
+
+        $spj = Spj::where('bidang', $user->bidang)
+            ->whereYear('created_at', $year)
+            ->latest()
+            ->get();
+
+        return view('pages.spj.index', compact('spj', 'year'));
     }
 
     public function create()
@@ -332,18 +341,30 @@ class SpjController extends Controller
             ->latest()
             ->get();
 
-        return view('pages.spj.keuangan.index', compact('spj'));
+        $isDisetujui = false;
+
+        return view('pages.spj.keuangan.index', compact('spj', 'isDisetujui'));
     }
 
-    public function indexKeuanganDisetujui()
+    public function indexKeuanganDisetujui(Request $request)
     {
+        $year = $request->year ?? now()->year;
+
+        if (!in_array((int)$year, [2025, 2026])) {
+            $year = now()->year;
+        }
+
         $spj = Spj::with('kelengkapans')
             ->where('status', 'Disetujui')
+            ->whereYear('created_at', $year)
             ->latest()
             ->get();
 
-        return view('pages.spj.keuangan.index', compact('spj'));
+        $isDisetujui = true;
+
+        return view('pages.spj.keuangan.index', compact('spj', 'year', 'isDisetujui'));
     }
+
 
 
     public function review($id)
@@ -357,18 +378,40 @@ class SpjController extends Controller
     public function submitReview(Request $request, $id)
     {
         $spj = Spj::findOrFail($id);
-
         $oldStatus = $spj->status;
+
+        // Tolak SPJ
+        if ($request->action_type === 'tolak') {
+
+            $spj->update([
+                'status' => 'Ditolak',
+                'keterangan' => $request->alasan_penolakan,
+            ]);
+
+            $bidangUsers = User::where('role_id', 2)
+                ->where('bidang', $spj->bidang)
+                ->get();
+
+            if ($bidangUsers->isNotEmpty()) {
+                Notification::send($bidangUsers, new SpjStatusChanged(
+                    $spj,
+                    $oldStatus,
+                    'Ditolak'
+                ));
+            }
+
+            logActivity('Reject', "Menolak SPJ ID {$spj->id}", 'spj');
+
+            return redirect()
+                ->route('spj.keuangan.index')
+                ->with('success', 'SPJ berhasil ditolak.');
+        }
 
         $kelengkapanList = Kelengkapan::where('spj_id', $id)->get();
 
         foreach ($kelengkapanList as $file) {
-            $status = $request->input("status.{$file->id}");
+            $status = $request->input("status.{$file->id}") ?? 'Belum Diverifikasi';
             $alasan = $request->input("alasan_{$file->id}");
-
-            if (!$status) {
-                $status = 'Belum Diverifikasi';
-            }
 
             $file->update([
                 'status' => $status,
@@ -376,12 +419,15 @@ class SpjController extends Controller
             ]);
         }
 
-        $semuaValid = Kelengkapan::where('spj_id', $id)->where('status', '!=', 'Valid')->count() === 0;
-        $spj->status = $semuaValid ? 'Disetujui' : 'Dikoreksi';
+        $semuaValid = Kelengkapan::where('spj_id', $id)
+            ->where('status', '!=', 'Valid')
+            ->count() === 0;
 
+        $spj->status = $semuaValid ? 'Disetujui' : 'Dikoreksi';
         $spj->save();
 
-        $bidangUsers = User::where('role_id', '2')
+        // Notifikasi ke Bidang
+        $bidangUsers = User::where('role_id', 2)
             ->where('bidang', $spj->bidang)
             ->get();
 
@@ -393,13 +439,15 @@ class SpjController extends Controller
             ));
         }
 
-        if ($spj->status == 'Disetujui') {
+        if ($spj->status === 'Disetujui') {
             logActivity('Approve', "Menyetujui SPJ ID {$spj->id}", 'spj');
-        } elseif ($spj->status == 'Dikoreksi') {
+        } else {
             logActivity('Update', "Merevisi SPJ ID {$spj->id}", 'spj');
         }
 
-        return redirect()->route('spj.keuangan.index')->with('success', 'Review SPJ berhasil disimpan.');
+        return redirect()
+            ->route('spj.keuangan.index')
+            ->with('success', 'Review SPJ berhasil disimpan.');
     }
 
     public function searchResults(Request $request)

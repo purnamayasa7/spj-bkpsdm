@@ -37,35 +37,50 @@
         <span class="ms-2">Memuat data</span><span class="dots"></span>
     </div>
 
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        @php
-            $judul =
-                $spj->isNotEmpty() && $spj->first()->status === 'Disetujui' ? 'Laporan SPJ Disetujui' : 'Review SPJ';
-        @endphp
-        <h1 class="h3 mb-0 text-gray-800">{{ $judul }}</h1>
-        <!-- Tombol Export -->
-        <a href="#" class="btn btn-sm btn-success shadow-sm dropdown-toggle" type="button" id="exportDropdown"
-            data-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-download fa-sm text-white-50"></i> Export
-        </a>
-        <div class="dropdown-menu dropdown-menu-right shadow fade" aria-labelledby="exportDropdown">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-4">
+            <h1 class="h3 mb-0 text-gray-800">
+                {{ $isDisetujui ? 'Laporan SPJ Disetujui' : 'Review SPJ' }}
+            </h1>
+        </div>
 
-            <!-- Export PDF -->
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalPDF">
-                <i class="fas fa-file-pdf fa-sm fa-fw mr-2 text-danger"></i>
-                PDF
+        <div class="col-md-4 text-center">
+            @if ($isDisetujui)
+                <div class="form-inline justify-content-center">
+                    <label class="mr-2 font-weight-bold text-muted">Periode Tahun</label>
+
+                    <select class="form-control form-control-sm w-auto"
+                        onchange="window.location.href='{{ request()->fullUrlWithQuery(['year' => '__YEAR__']) }}'.replace('__YEAR__', this.value)">
+                        @for ($y = now()->year; $y <= now()->year + 1; $y++)
+                            <option value="{{ $y }}" {{ ($year ?? now()->year) == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+            @endif
+        </div>
+
+        <div class="col-md-4 text-right">
+            <a href="#" class="btn btn-sm btn-success shadow-sm dropdown-toggle" type="button" id="exportDropdown"
+                data-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download fa-sm text-white-50"></i> Export
             </a>
 
-            <!-- Export Excel -->
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalExcel">
-                <i class="fas fa-file-excel fa-sm fa-fw mr-2 text-success"></i>
-                Excel
-            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow fade" aria-labelledby="exportDropdown">
 
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalPDF">
+                    <i class="fas fa-file-pdf fa-sm fa-fw mr-2 text-danger"></i> PDF
+                </a>
+
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalExcel">
+                    <i class="fas fa-file-excel fa-sm fa-fw mr-2 text-success"></i> Excel
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Modal untuk Filter PDF -->
+    <!-- Modal Filter PDF -->
     <div class="modal fade" id="filterModalPDF" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -95,12 +110,12 @@
                             <div class="form-group">
                                 <label>Bidang</label>
                                 <select name="bidang" class="form-control">
-                                <option value="">Semua Bidang</option>
-                                <option value="PKA">PKA</option>
-                                <option value="PKAP">PKAP</option>
-                                <option value="MP">MP</option>
-                                <option value="PPI">PPI</option>
-                                <option value="Sekretariat">Sekretariat</option>
+                                    <option value="">Semua Bidang</option>
+                                    <option value="PKA">PKA</option>
+                                    <option value="PKAP">PKAP</option>
+                                    <option value="MP">MP</option>
+                                    <option value="PPI">PPI</option>
+                                    <option value="Sekretariat">Sekretariat</option>
                                 </select>
                             </div>
                         @endif
@@ -258,7 +273,8 @@
 
                                             @if (in_array($item->status, ['Dikirim']))
                                                 <a href="{{ route('spj.keuangan.review', $item->id) }}"
-                                                    class="d-inline-block mr-2 btn btn-sm btn-warning me-2" title="Review SPJ">
+                                                    class="d-inline-block mr-2 btn btn-sm btn-warning me-2"
+                                                    title="Review SPJ">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                             @else
@@ -268,7 +284,8 @@
                                                 </button>
                                             @endif
 
-                                            <a href="{{ route('spj.downloadZip', $item->id) }}" class="btn btn-success btn-sm" title="Unduh Dokumen">
+                                            <a href="{{ route('spj.downloadZip', $item->id) }}"
+                                                class="btn btn-success btn-sm" title="Unduh Dokumen">
                                                 <i class="fas fa-file-download"></i>
                                             </a>
                                         </div>

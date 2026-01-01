@@ -177,7 +177,6 @@
             $("body").toggleClass("sidebar-toggled");
             $(".sidebar").toggleClass("toggled");
 
-            // Tutup semua collapse ketika sidebar mengecil
             if ($(".sidebar").hasClass("toggled")) {
                 $(".sidebar .collapse.show").collapse('hide');
             }

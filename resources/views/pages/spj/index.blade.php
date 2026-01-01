@@ -37,12 +37,36 @@
         <span class="ms-2">Memuat data</span><span class="dots"></span>
     </div>
 
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Data SPJ</h1>
+    <div class="row align-items-center mb-4">
 
-        <div class="d-flex gap-4">
-            <a href="/spj/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                style="margin-right: 10px"><i class="fas fa-plus fa-sm text-white-50"></i> Buat SPJ</a>
+        <!-- KIRI: JUDUL -->
+        <div class="col-md-4 text-left">
+            <h1 class="h3 mb-0 text-gray-800">Data SPJ</h1>
+        </div>
+
+        <!-- TENGAH: PERIODE -->
+        <div class="col-md-4 d-flex justify-content-center">
+            <div class="form-inline">
+                <label class="mr-2 font-weight-bold text-muted">Periode Tahun</label>
+
+                <select class="form-control form-control-sm"
+                    onchange="window.location.href='{{ request()->fullUrlWithQuery(['year' => '__YEAR__']) }}'.replace('__YEAR__', this.value)">
+                    @for ($y = now()->year; $y <= now()->year + 1; $y++)
+                        <option value="{{ $y }}" {{ ($year ?? now()->year) == $y ? 'selected' : '' }}>
+                            {{ $y }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+        </div>
+
+        <!-- KANAN: AKSI -->
+        <div class="col-md-4 d-flex justify-content-end align-items-center">
+
+            <a href="/spj/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mr-2">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Buat SPJ
+            </a>
+
             <div class="dropdown d-none d-sm-inline-block">
                 <button class="btn btn-sm btn-success shadow-sm dropdown-toggle" type="button" id="exportDropdown"
                     data-toggle="dropdown" aria-expanded="false">
@@ -51,24 +75,20 @@
 
                 <div class="dropdown-menu dropdown-menu-right shadow fade" aria-labelledby="exportDropdown">
 
-                    <!-- Export PDF -->
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalPDF">
-                        <i class="fas fa-file-pdf fa-sm fa-fw mr-2 text-danger"></i>
-                        PDF
+                        <i class="fas fa-file-pdf fa-sm fa-fw mr-2 text-danger"></i> PDF
                     </a>
 
-                    <!-- Export Excel -->
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#filterModalExcel">
-                        <i class="fas fa-file-excel fa-sm fa-fw mr-2 text-success"></i>
-                        Excel
+                        <i class="fas fa-file-excel fa-sm fa-fw mr-2 text-success"></i> Excel
                     </a>
-
                 </div>
             </div>
 
         </div>
-
     </div>
+
+
 
     <!-- Modal untuk Filter PDF -->
     <div class="modal fade" id="filterModalPDF" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
@@ -260,7 +280,8 @@
 
                                             @if (in_array($item->status, ['Dikoreksi', 'Disetujui']))
                                                 <a href="{{ url('/spj/' . $item->id . '/edit') }}"
-                                                    class="d-inline-block mr-2 btn btn-sm btn-warning me-2" title="Edit SPJ">
+                                                    class="d-inline-block mr-2 btn btn-sm btn-warning me-2"
+                                                    title="Edit SPJ">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                             @else
@@ -270,7 +291,8 @@
                                                 </button>
                                             @endif
 
-                                            <a href="{{ route('spj.downloadZip', $item->id) }}" class="btn btn-success btn-sm" title="Unduh Dokumen">
+                                            <a href="{{ route('spj.downloadZip', $item->id) }}"
+                                                class="btn btn-success btn-sm" title="Unduh Dokumen">
                                                 <i class="fas fa-file-download"></i>
                                             </a>
                                         </div>
