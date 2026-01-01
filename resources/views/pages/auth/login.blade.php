@@ -64,7 +64,7 @@
 						</div>
 					</div>
 					<div class="text-center mt-4 text-muted">
-						<span>Copyright &copy; E-SPJ BKPSDM Buleleng {{ date('Y') }}</span> 
+						<span>Copyright &copy; E-SPJ BKPSDM Buleleng 2025 - {{ date('Y') }}</span> 
 					</div>
 				</div>
 			</div>
