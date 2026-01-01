@@ -51,11 +51,8 @@
 
                 <select class="form-control form-control-sm"
                     onchange="window.location.href='{{ request()->fullUrlWithQuery(['year' => '__YEAR__']) }}'.replace('__YEAR__', this.value)">
-                    @for ($y = now()->year; $y <= now()->year + 1; $y++)
-                        <option value="{{ $y }}" {{ ($year ?? now()->year) == $y ? 'selected' : '' }}>
-                            {{ $y }}
-                        </option>
-                    @endfor
+                    <option value="2025" {{ $year == 2025 ? 'selected' : '' }}>2025</option>
+                    <option value="2026" {{ $year == 2026 ? 'selected' : '' }}>2026</option>
                 </select>
             </div>
         </div>
