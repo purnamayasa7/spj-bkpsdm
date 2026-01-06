@@ -115,7 +115,7 @@
 
                                     <td>
                                         @if ($file->file_path)
-                                            <a href="{{ Storage::url($file->file_path) }}" target="_blank"
+                                            <a href="{{ route('spj.file.view', $file->id) }}" target="_blank"
                                                 class="btn btn-sm btn-success">
                                                 <i class="fas fa-file-pdf"></i> Lihat PDF
                                             </a>
