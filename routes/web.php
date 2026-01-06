@@ -102,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/notifications/{id}/open', [NotificationController::class, 'open'])->name('notifications.open');
     Route::get('spj/{id}/pdf/{index}', [SpjFileController::class, 'view'])->name('spj.pdf');
+    Route::get('/spj/file/{kelengkapan}', [SpjController::class, 'viewFile'])->name('spj.file.view');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

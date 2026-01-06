@@ -589,4 +589,30 @@ class SpjController extends Controller
 
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
+    public function viewFile(Kelengkapan $kelengkapan)
+    {
+        $user = Auth::user();
+        $spj  = Spj::findOrFail($kelengkapan->spj_id);
+        
+        if (
+            $user->role_id !== 1 &&
+            ($user->role_id !== 2 || $user->bidang !== $spj->bidang)
+        ) {
+            abort(403);
+        }
+
+        $fullPath = storage_path('app/public/' . $kelengkapan->file_path);
+
+        if (!file_exists($fullPath)) {
+            abort(404);
+        }
+
+        return response()->file($fullPath, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline',
+            'Cache-Control' => 'private, no-store, no-cache',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
 }
