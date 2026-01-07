@@ -16,16 +16,14 @@ class ActivityController extends Controller
     {
         $user = Auth::user();
 
-        // Jika belum ada filter, KOSONGKAN TABLE
         if (!$request->filled('date_from') && !$request->filled('date_to')) {
             return view('pages.activity.index', [
-                'activities' => collect([]) // kosong
+                'activities' => collect([])
             ]);
         }
 
         $query = Activities::with('user')->latest();
 
-        // Filter Tanggal
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -34,12 +32,10 @@ class ActivityController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        // ROLE: jika bidang → hanya data user tersebut
         if ($user->role === 'bidang') {
             $query->where('user_id', $user->id);
         }
 
-        // Ambil semua data
         $activities = $query->get();
 
         return view('pages.activity.index', compact('activities'));

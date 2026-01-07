@@ -380,6 +380,11 @@ class SpjController extends Controller
         $spj = Spj::findOrFail($id);
         $oldStatus = $spj->status;
 
+        if ($request->filled('keterangan')) {
+            $spj->keterangan = $request->keterangan;
+            $spj->save();
+        }
+
         // Tolak SPJ
         if ($request->action_type === 'tolak') {
 
@@ -536,6 +541,21 @@ class SpjController extends Controller
         return Excel::download(new SpjExport($request), 'laporan-spj.xlsx');
     }
 
+    public function checklistPdf($id)
+    {
+        $spj = Spj::with(['kelengkapans' => function ($q) {
+            $q->whereNotNull('file_path')
+                ->where('file_path', '!=', '');
+        }])->findOrFail($id);
+
+        return Pdf::loadView(
+            'pages.spj.export.checklist-spj',
+            compact('spj')
+        )
+            ->setPaper('a4', 'portrait')
+            ->stream("checklist-{$spj->id}.pdf");
+    }
+
     private function filterSpj($request)
     {
         $query = Spj::query();
@@ -594,7 +614,7 @@ class SpjController extends Controller
     {
         $user = Auth::user();
         $spj  = Spj::findOrFail($kelengkapan->spj_id);
-        
+
         if (
             $user->role_id !== 1 &&
             ($user->role_id !== 2 || $user->bidang !== $spj->bidang)

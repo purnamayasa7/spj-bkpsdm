@@ -5,7 +5,6 @@
         <h1 class="h3 mb-0 text-gray-800">Lihat Data SPJ</h1>
 
         <div class="d-flex gap-4">
-            {{-- Tombol Kembali --}}
             @if (Auth::user()->role_id === 1)
                 <a href="{{ route('spj.keuangan.index') }}" class="btn btn-outline-secondary btn-sm"
                     style="margin-right: 10px">
@@ -17,7 +16,6 @@
                 </a>
             @endif
 
-            {{-- Tombol Koreksi (hanya muncul jika status = Dikoreksi & role = Bidang) --}}
             @if ($spj->status === 'Dikoreksi' && Auth::user()->role_id === 2)
                 <a href="{{ route('spj.edit', $spj->id) }}" class="btn btn-warning btn-sm text-white">
                     <i class="fas fa-edit"></i> Koreksi
@@ -32,10 +30,16 @@
 
     <div class="card shadow mb-4">
         <div class="card-body">
-            {{-- =========================
-        DATA SPJ UTAMA
-    ========================== --}}
-            <h5 class="mb-3 text-primary">Data SPJ</h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-primary mb-0">Data SPJ</h5>
+
+                @if ( Auth::user()->role_id === 1)
+                    <a href="{{ route('spj.checklist.pdf', $spj->id) }}" target="_blank" class="btn btn-primary py-1">
+                        <i class="fas fa-print"></i> Cetak Checklist
+                    </a>
+                @endif
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>ID SPJ</label>

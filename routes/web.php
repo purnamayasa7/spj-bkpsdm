@@ -69,6 +69,7 @@ Route::prefix('keuangan')->middleware('role:Keuangan')->group(function () {
     Route::get('/spj/{id}/review', [SpjController::class, 'review'])->name('spj.keuangan.review');
     Route::post('/spj/{id}/review', [SpjController::class, 'submitReview'])->name('spj.keuangan.review.submit');
     Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
+    Route::get('/spj/{id}/checklist-pdf', [SpjController::class, 'checklistPdf'])->name('spj.checklist.pdf');
     Route::get('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
     // Route::post('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
     Route::get('/backup/download', [BackupController::class, 'download'])->name('backup.download');

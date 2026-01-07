@@ -75,7 +75,7 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <label>Keterangan</label>
-                        <textarea class="form-control" rows="3" readonly>{{ $spj->keterangan }}</textarea>
+                        <textarea class="form-control" rows="3" name="keterangan">{{ $spj->keterangan }}</textarea>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label>Status Saat Ini</label>
