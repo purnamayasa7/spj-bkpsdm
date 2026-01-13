@@ -82,8 +82,8 @@
 
     <table>
         <tr>
-            <th width="50%">Tanggal SPJ: {{ $spj->tanggal_spj }}</th>
-            <th>Tanggal Terima SPJ: {{ $spj->tanggal_terima_spj }}</th>
+            <th width="50%">Tanggal SPJ: {{ date('d-m-Y', strtotime($spj->tanggal_spj)) }}</th>
+            <th>Tanggal Terima SPJ: {{ date('d-m-Y', strtotime($spj->tanggal_terima_spj)) }}</th>
         </tr>
     </table>
 

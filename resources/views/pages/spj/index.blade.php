@@ -85,8 +85,6 @@
         </div>
     </div>
 
-
-
     <!-- Modal untuk Filter PDF -->
     <div class="modal fade" id="filterModalPDF" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
         aria-hidden="true">
@@ -251,8 +249,8 @@
                                     <td>{{ $item->belanja }}</td>
                                     <td>{{ number_format($item->nilai, 0, ',', '.') }}</td>
                                     <td>{{ $item->sumber_dana }}</td>
-                                    <td>{{ $item->tanggal_spj }}</td>
-                                    <td>{{ $item->tanggal_terima_spj }}</td>
+                                    <td>{{ $item->tanggal_spj ? date('d-m-Y', strtotime($item->tanggal_spj)) : '-' }}</td>
+                                    <td>{{ $item->tanggal_terima_spj ? date('d-m-Y', strtotime($item->tanggal_terima_spj)) : '-' }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td class="text-center">
                                         @if ($item->status === 'Dikirim')
