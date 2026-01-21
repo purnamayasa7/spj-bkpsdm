@@ -81,7 +81,6 @@
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -232,6 +231,7 @@
                                 <th>Nilai</th>
                                 <th>Sumber Dana</th>
                                 <th>Tanggal SPJ</th>
+                                <th style="display: none;">Created At</th>
                                 <th>Tgl Terima SPJ</th>
                                 <th>Keterangan</th>
                                 <th>Status</th>
@@ -250,6 +250,7 @@
                                     <td>{{ number_format($item->nilai, 0, ',', '.') }}</td>
                                     <td>{{ $item->sumber_dana }}</td>
                                     <td>{{ $item->tanggal_spj ? date('d-m-Y', strtotime($item->tanggal_spj)) : '-' }}</td>
+                                    <td style="display: none;">{{ $item->created_at }}</td>
                                     <td>{{ $item->tanggal_terima_spj ? date('d-m-Y', strtotime($item->tanggal_terima_spj)) : '-' }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td class="text-center">

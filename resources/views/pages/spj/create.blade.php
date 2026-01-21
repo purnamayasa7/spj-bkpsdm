@@ -13,9 +13,62 @@
 @section('content')
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Buat SPJ</h1>
-        <a href="/spj" class="btn btn-outline-secondary btn-sm">
+        <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-sm">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
+    </div>
+
+    {{-- Modal Cetak Kuitansi --}}
+    <div class="modal fade" id="modalKuitansi" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="formKuitansi" method="POST" target="_blank" action="{{ route('kuitansi.preview') }}">
+
+                @csrf
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cetak Kuitansi</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nomor</label>
+                            <input type="text" name="nomor_rekening" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kode Rekening</label>
+                            <input type="text" name="kode_rekening" id="kode_rekening" class="form-control"
+                                placeholder="Ketik Kode Rekening (12 Digit)" autocomplete="off" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Untuk Pembayaran</label>
+                            <textarea name="untuk_pembayaran" class="form-control" rows="7" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Yang Menerima</label>
+                            <input type="text" name="penerima" class="form-control" required>
+                        </div>
+
+                        <input type="hidden" name="jenis_spj" id="k_jenis">
+                        <input type="hidden" name="tanggal_spj" id="k_tanggal">
+                        <input type="hidden" name="sumber_dana" id="k_sumber">
+                        <input type="hidden" name="nilai" id="k_nilai">
+                        <input type="hidden" name="pptk" id="k_pptk">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary py-1"><i class="fas fa-print"></i> Cetak</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="card shadow mb-4">
@@ -56,9 +109,19 @@
 
                     <div class="col-md-6 mb-3">
                         <label for="pptk">PPTK</label>
-                        <input type="text" name="pptk" id="pptk" class="form-control"
-                            value="{{ old('pptk') }}" required>
+                        <input type="text" name="pptk" id="pptk" class="form-control" readonly>
                     </div>
+
+                    {{-- <div class="col-md-6 mb-3">
+                        <label for="pptk">PPTK</label>
+                        <select name="pptk" id="pptk" class="form-control" required>
+                            <option value="">-- Pilih PPTK --</option>
+                            <option value="Ni Komang Sutrisni, S.Pd">Ni Komang Sutrisni, S.Pd</option>
+                            <option value="Made Herry Hermawan, S.STP., M.A.P">Made Herry Hermawan, S.STP., M.A.P</option>
+                            <option value="I Gede Arsana, S.Sos">I Gede Arsana, S.Sos</option>
+                            <option value="I Gusti Kade Ria Prisahatna, SH">I Gusti Kade Ria Prisahatna, SH</option>
+                        </select>
+                    </div> --}}
 
                     <div class="col-md-6 mb-3">
                         <label for="kegiatan">Kegiatan</label>
@@ -75,7 +138,7 @@
                     <div class="col-md-6 mb-3">
                         <label for="nilai">Nilai</label>
                         <input type="number" name="nilai" id="nilai" class="form-control"
-                            value="{{ old('nilai') }}" required>
+                            value="{{ old('nilai') }}" required inputmode="numeric" pattern="[0-9]*">
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -158,12 +221,21 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $dokumen }}</td>
                                     <td>
-                                        <input type="file" name="dokumen[{{ $dokumen }}]"
-                                            class="form-control file-input" data-doc="{{ $dokumen }}"
-                                            accept="application/pdf">
-                                        <small class="text-danger d-none file-warning">
-                                            Ukuran file PDF melebihi dari 2 MB.
-                                        </small>
+                                        <div class="d-flex gap-2">
+                                            <input type="file" name="dokumen[{{ $dokumen }}]"
+                                                class="form-control file-input" data-doc="{{ $dokumen }}"
+                                                accept="application/pdf">
+                                            <small class="text-danger d-none file-warning">
+                                                Ukuran file PDF melebihi dari 2 MB.
+                                            </small>
+
+                                            @if ($dokumen === 'Kuitansi')
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    onclick="openModalKuitansi()">
+                                                    Cetak
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -207,13 +279,8 @@
                 });
             });
 
-            /* =========================
-               2. SUBMIT HANDLER
-            ========================== */
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                // FIELD WAJIB
                 const requiredFields = [
                     'bidang',
                     'jenis',
@@ -247,9 +314,6 @@
                     return;
                 }
 
-                /* =========================
-                   3. CEK FILE BESAR
-                ========================== */
                 let largeFiles = [];
 
                 fileInputs.forEach(input => {
@@ -258,9 +322,6 @@
                     }
                 });
 
-                /* =========================
-                   4. KONFIRMASI UTAMA
-                ========================== */
                 Swal.fire({
                     title: 'Anda yakin membuat SPJ ini?',
                     text: "Pastikan semua data sudah benar sebelum disimpan.",
@@ -275,9 +336,6 @@
 
                     if (!result.isConfirmed) return;
 
-                    /* =========================
-                       5. FILE BESAR → WARNING
-                    ========================== */
                     if (largeFiles.length > 0) {
                         Swal.fire({
                             icon: 'warning',
@@ -293,15 +351,10 @@
                         });
                         return;
                     }
-
-                    // TIDAK ADA FILE BESAR
                     submitForm();
                 });
             });
 
-            /* =========================
-               6. SUBMIT FINAL
-            ========================== */
             function submitForm() {
                 Swal.fire({
                     title: 'Menyimpan...',
@@ -313,6 +366,73 @@
                     didClose: () => form.submit()
                 });
             }
+        });
+
+        document.getElementById('bidang').addEventListener('change', function() {
+            const bidang = this.value;
+
+            if (bidang === 'PKA') {
+                document.getElementById('pptk').value = 'Ni Komang Sutrisni, S.Pd';
+            }
+
+            if (bidang === 'PPI') {
+                document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
+            }
+
+            if (bidang === 'MP') {
+                document.getElementById('pptk').value = 'I Gede Arsana, S.Sos';
+            }
+
+            if (bidang === 'PKAP') {
+                document.getElementById('pptk').value = 'I Gusti Kade Ria Prisahatna, SH';
+            }
+
+            if (bidang === 'Sekretariat') {
+                document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
+            }
+        });
+
+        function openModalKuitansi() {
+
+            document.getElementById('k_jenis').value =
+                document.getElementById('jenis').value;
+
+            document.getElementById('k_tanggal').value =
+                document.getElementById('tanggal_spj').value;
+
+            document.getElementById('k_sumber').value =
+                document.getElementById('sumber_dana').value;
+
+            document.getElementById('k_nilai').value =
+                document.getElementById('nilai').value;
+
+            document.getElementById('k_pptk').value =
+                document.getElementById('pptk').value;
+
+            new bootstrap.Modal(document.getElementById('modalKuitansi')).show();
+        }
+
+        document.getElementById('kode_rekening').addEventListener('input', function() {
+            // hanya angka
+            let raw = this.value.replace(/\D/g, '');
+
+            // pola segmen rekening
+            const pattern = [1, 2, 2, 1, 2, 4, 1, 1, 2, 2, 2, 4];
+
+            let result = [];
+            let index = 0;
+
+            for (let p of pattern) {
+                if (raw.length > index) {
+                    result.push(raw.substr(index, p));
+                    index += p;
+                }
+            }
+
+            this.value = result.join(' ');
+        });
+        document.getElementById('nilai').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
     </script>
 @endsection

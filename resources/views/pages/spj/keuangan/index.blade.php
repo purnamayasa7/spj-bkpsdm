@@ -194,7 +194,6 @@
         </div>
     </div>
 
-
     <script>
         function submitExport(type) {
             let form = document.getElementById('exportForm');
@@ -213,7 +212,7 @@
         <div class="col">
             <div class="card shadow">
                 <div class="card-body">
-                    <table id="spjTable" class="table table-responsive table-bordered table-hovered"
+                    <table id="spjTableKeuangan" class="table table-responsive table-bordered table-hovered"
                         style="font-size: 0.877rem; display:none;">
                         <thead>
                             <tr>
@@ -226,6 +225,7 @@
                                 <th>Nilai</th>
                                 <th>Sumber Dana</th>
                                 <th>Tanggal SPJ</th>
+                                <th style="display:none;">Updated At</th>
                                 <th>Tgl Terima SPJ</th>
                                 <th>Keterangan</th>
                                 <th>Status</th>
@@ -244,6 +244,7 @@
                                     <td>{{ number_format($item->nilai, 0, ',', '.') }}</td>
                                     <td>{{ $item->sumber_dana }}</td>
                                     <td>{{ $item->tanggal_spj ? date('d-m-Y', strtotime($item->tanggal_spj)) : '-' }}</td>
+                                    <td style="display: none;">{{ $item->updated_at->timestamp }}</td>
                                     <td>{{ $item->tanggal_terima_spj ? date('d-m-Y', strtotime($item->tanggal_terima_spj)) : '-' }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td class="text-center">

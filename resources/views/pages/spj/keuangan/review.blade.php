@@ -9,7 +9,7 @@
             </a>
         @elseif (Auth::user()->role_id === 2)
             <a href="{{ route('spj.index') }}" class="btn btn-outline-secondary btn-sm" style="margin-right: 10px">
-                <i class="fas fa-arrow-left"></i> Kembali
+                <i class="{{ url()->previous() }}"></i> Kembali
             </a>
         @endif
 

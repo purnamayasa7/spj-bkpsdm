@@ -11,8 +11,8 @@ class Spj extends Model
 
     protected $table = 'spjs';
     protected $primaryKey = 'id';
-    public $incrementing = false;   // <- WAJIB! karena id bukan auto increment
-    protected $keyType = 'string';  // <- WAJIB! supaya dibaca sebagai string
+    public $incrementing = false;   
+    protected $keyType = 'string';  
 
     protected $fillable = [
         'id',
@@ -36,6 +36,9 @@ class Spj extends Model
         return $this->hasMany(Kelengkapan::class, 'spj_id', 'id');
     }
 
+    public function histories(){
+        return $this->hasMany(SpjHistory::class, 'spj_id', 'id');
+    }
 }
 
 

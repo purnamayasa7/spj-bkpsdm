@@ -20,6 +20,8 @@ class NotificationController extends Controller
         $notifications = DatabaseNotification::where('notifiable_id', $user->id)
             ->where('notifiable_type', get_class($user))
             ->latest()
+
+            ->take(50)
             ->get();
 
         return view('pages.notifications.index', compact('notifications'));

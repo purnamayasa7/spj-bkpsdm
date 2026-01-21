@@ -14,6 +14,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
+        "riskihajar/terbilang": "^2.0",
         "spatie/laravel-backup": "^9.3"
     },
     "require-dev": {
@@ -32,7 +33,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/ActivityHelper.php"
+            "app/Helpers/ActivityHelper.php",
+            "app/Helpers/Terbilang.php"
         ]
     },
     "autoload-dev": {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Spj;
 use App\Models\Kelengkapan;
 use App\Models\User;
+use App\Models\SpjHistory;
 use Illuminate\Http\Request;
 use App\Notifications\SpjStatusChanged;
 use App\Notifications\SpjCreatedNotification;
@@ -46,7 +47,7 @@ class SpjController extends Controller
         $lastSpj = Spj::where('id', 'like', "SPJ{$tanggal}%")->orderBy('id', 'desc')->first();
 
         if ($lastSpj) {
-            $lastNumber = (int) substr($lastSpj->id, -3); // ambil 3 digit terakhir
+            $lastNumber = (int) substr($lastSpj->id, -3);
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
@@ -100,6 +101,17 @@ class SpjController extends Controller
             $spj = Spj::create($validated);
 
             logActivity('Create', "Membuat SPJ ID {$spj->id}", 'spj');
+
+            //Insert History
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'aksi' => 'Create',
+                'status_sebelum' => 'Dibuat',
+                'status_sesudah' => 'Dikirim',
+                'keterangan' => 'SPJ Dikirim',
+                'actor_id' => Auth::user()->id,
+                'actor_role' => Auth::user()->role->name,
+            ]);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -312,6 +324,17 @@ class SpjController extends Controller
 
         logActivity('Update', "Revisi SPJ ID {$spj->id}", 'spj');
 
+        //Insert History
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'aksi' => 'Update',
+                'status_sebelum' => 'Direvisi',
+                'status_sesudah' => 'Dikirim',
+                'keterangan' => 'SPJ Direvisi',
+                'actor_id' => Auth::user()->id,
+                'actor_role' => Auth::user()->role->name,
+            ]);
+
         return redirect('/spj')->with('success', 'SPJ dan dokumen berhasil diperbarui dan dikirim ulang.');
     }
 
@@ -365,8 +388,6 @@ class SpjController extends Controller
         return view('pages.spj.keuangan.index', compact('spj', 'year', 'isDisetujui'));
     }
 
-
-
     public function review($id)
     {
         $spj = Spj::findOrFail($id);
@@ -407,6 +428,17 @@ class SpjController extends Controller
 
             logActivity('Reject', "Menolak SPJ ID {$spj->id}", 'spj');
 
+            //Insert History
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'aksi' => 'Reject',
+                'status_sebelum' => $oldStatus,
+                'status_sesudah' => 'Ditolak',
+                'keterangan' => 'SPJ Ditolak',
+                'actor_id' => Auth::user()->id,
+                'actor_role' => Auth::user()->role->name,
+            ]);
+
             return redirect()
                 ->route('spj.keuangan.index')
                 ->with('success', 'SPJ berhasil ditolak.');
@@ -446,10 +478,31 @@ class SpjController extends Controller
 
         if ($spj->status === 'Disetujui') {
             logActivity('Approve', "Menyetujui SPJ ID {$spj->id}", 'spj');
+
+            //Insert History
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'aksi' => 'Approve',
+                'status_sebelum' => $oldStatus,
+                'status_sesudah' => 'Disetujui',
+                'keterangan' => 'SPJ Disetujui',
+                'actor_id' => Auth::user()->id,
+                'actor_role' => Auth::user()->role->name,
+            ]);
         } else {
             logActivity('Update', "Merevisi SPJ ID {$spj->id}", 'spj');
-        }
 
+            //Insert History
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'aksi' => 'Update',
+                'status_sebelum' => $oldStatus,
+                'status_sesudah' => 'Direvisi',
+                'keterangan' => 'SPJ Direvisi',
+                'actor_id' => Auth::user()->id,
+                'actor_role' => Auth::user()->role->name,
+            ]);
+        }
         return redirect()
             ->route('spj.keuangan.index')
             ->with('success', 'Review SPJ berhasil disimpan.');

@@ -27,7 +27,13 @@
                  'icon' => 'fas fa-fw fa-table',
                  'active_key' => 'review-spj',
              ],
-
+             (object) [
+                 'type' => 'item',
+                 'title' => 'History SPJ',
+                 'path' => route('spj.history.index'),
+                 'icon' => 'fas fa-fw fa-history',
+                 'active_key' => 'history',
+             ],
              (object) [
                  'type' => 'item',
                  'title' => 'Kalender',
@@ -118,9 +124,9 @@
 
              (object) [
                  'type' => 'item',
-                 'title' => 'Laporan SPJ',
-                 'path' => 'history',
-                 'icon' => 'fas fa-fw fa-file-alt',
+                 'title' => 'Riwayat SPJ',
+                 'path' => route('spj.history.index'),
+                 'icon' => 'fas fa-fw fa-history',
                  'active_key' => 'history',
              ],
          ],

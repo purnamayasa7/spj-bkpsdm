@@ -6,10 +6,12 @@ use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelengkapanController;
+use App\Http\Controllers\KuitansiController;
 use App\Http\Controllers\SpjController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SpjFileController;
+use App\Http\Controllers\SpjHistoryController;
 use App\Models\Kelengkapan;
 use App\Models\Spj;
 use Illuminate\Routing\RouteRegistrar;
@@ -88,6 +90,9 @@ Route::delete('/spj/{id}', [SpjController::class, 'delete']);
 Route::get('/spj/{id}/edit', [SpjController::class, 'edit'])->name('spj.edit');
 Route::post('/spj/{id}/update', [SpjController::class, 'update'])->name('spj.update');
 Route::get('/spj/{id}', [SpjController::class, 'show'])->name('spj.show');
+Route::post('/kuitansi/preview', [KuitansiController::class, 'preview'])->name('kuitansi.preview');
+
+
 
 
 /*
@@ -104,6 +109,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/notifications/{id}/open', [NotificationController::class, 'open'])->name('notifications.open');
     Route::get('spj/{id}/pdf/{index}', [SpjFileController::class, 'view'])->name('spj.pdf');
     Route::get('/spj/file/{kelengkapan}', [SpjController::class, 'viewFile'])->name('spj.file.view');
+    Route::get('/spj-history', [SpjHistoryController::class, 'index'])->name('spj.history.index');
+    Route::get('/spj/{spj}/history', [SpjHistoryController::class, 'show'])->name('spj.history.show');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

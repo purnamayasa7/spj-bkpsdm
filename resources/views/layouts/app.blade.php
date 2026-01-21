@@ -152,6 +152,21 @@
         });
 
         $(document).ready(function() {
+            $('#loadingText').show();
+
+            let table = $('#spjTableKeuangan').DataTable({
+                order: [
+                    [9, 'desc']
+                ],
+                initComplete: function() {
+                    $('#loadingText').fadeOut(200, function() {
+                        $('#spjTableKeuangan').fadeIn(300);
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function() {
             let table = $('#spjSearch').DataTable({
                 searching: false,
                 lengthChange: false,
