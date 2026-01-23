@@ -44,6 +44,8 @@ class SpjController extends Controller
         // SPJ ID
         $tanggal = now()->format('dmY');
 
+        $user = Auth::user();
+
         $lastSpj = Spj::where('id', 'like', "SPJ{$tanggal}%")->orderBy('id', 'desc')->first();
 
         if ($lastSpj) {
@@ -55,7 +57,7 @@ class SpjController extends Controller
 
         $previewId = 'SPJ' . $tanggal . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return view('pages.spj.create', ['previewId' => $previewId]);
+        return view('pages.spj.create', ['previewId' => $previewId, 'bidangUser' => $user->bidang]);
     }
 
     public function store(Request $request)

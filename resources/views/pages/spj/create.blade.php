@@ -85,16 +85,9 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="bidang">Bidang</label>
-                        <select name="bidang" id="bidang" class="form-control" required>
-                            <option value="">-- Pilih Bidang --</option>
-                            <option value="PKA" {{ old('bidang') == 'PKA' ? 'selected' : '' }}>PKA</option>
-                            <option value="PKAP" {{ old('bidang') == 'PKAP' ? 'selected' : '' }}>PKAP</option>
-                            <option value="MP" {{ old('bidang') == 'MP' ? 'selected' : '' }}>MP</option>
-                            <option value="PPI" {{ old('bidang') == 'PPI' ? 'selected' : '' }}>PPI</option>
-                            <option value="Sekretariat" {{ old('bidang') == 'Sekretariat' ? 'selected' : '' }}>Sekretariat
-                            </option>
-                        </select>
+                        <label>Bidang</label>
+                        <input type="text" class="form-control" value="{{ $bidangUser }}" readonly>
+                        <input type="hidden" name="bidang" id="bidang" value="{{ $bidangUser }}">
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -255,6 +248,21 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Check Bidang & PPTK User
+            const bidang = document.getElementById('bidang').value;
+            const pptkInput = document.getElementById('pptk');
+
+            const pptkMap = {
+                'PKA': 'Ni Komang Sutrisni, S.Pd',
+                'PPI': 'Made Herry Hermawan, S.STP., M.A.P',
+                'MP': 'I Gede Arsana, S.Sos',
+                'PKAP': 'I Gusti Kade Ria Prisahatna, SH',
+                'Sekretariat': 'Made Herry Hermawan, S.STP., M.A.P'
+            };
+
+            if (pptkMap[bidang]) {
+                pptkInput.value = pptkMap[bidang];
+            }
 
             const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
             const fileInputs = document.querySelectorAll('.file-input');
@@ -368,29 +376,29 @@
             }
         });
 
-        document.getElementById('bidang').addEventListener('change', function() {
-            const bidang = this.value;
+        // document.getElementById('bidang').addEventListener('change', function() {
+        //     const bidang = this.value;
 
-            if (bidang === 'PKA') {
-                document.getElementById('pptk').value = 'Ni Komang Sutrisni, S.Pd';
-            }
+        //     if (bidang === 'PKA') {
+        //         document.getElementById('pptk').value = 'Ni Komang Sutrisni, S.Pd';
+        //     }
 
-            if (bidang === 'PPI') {
-                document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
-            }
+        //     if (bidang === 'PPI') {
+        //         document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
+        //     }
 
-            if (bidang === 'MP') {
-                document.getElementById('pptk').value = 'I Gede Arsana, S.Sos';
-            }
+        //     if (bidang === 'MP') {
+        //         document.getElementById('pptk').value = 'I Gede Arsana, S.Sos';
+        //     }
 
-            if (bidang === 'PKAP') {
-                document.getElementById('pptk').value = 'I Gusti Kade Ria Prisahatna, SH';
-            }
+        //     if (bidang === 'PKAP') {
+        //         document.getElementById('pptk').value = 'I Gusti Kade Ria Prisahatna, SH';
+        //     }
 
-            if (bidang === 'Sekretariat') {
-                document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
-            }
-        });
+        //     if (bidang === 'Sekretariat') {
+        //         document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
+        //     }
+        // });
 
         function openModalKuitansi() {
 
