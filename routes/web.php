@@ -10,6 +10,7 @@ use App\Http\Controllers\KuitansiController;
 use App\Http\Controllers\SpjController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SpjFileController;
 use App\Http\Controllers\SpjHistoryController;
 use App\Models\Kelengkapan;
@@ -75,6 +76,17 @@ Route::prefix('keuangan')->middleware('role:Keuangan')->group(function () {
     Route::get('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
     // Route::post('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
     Route::get('/backup/download', [BackupController::class, 'download'])->name('backup.download');
+    // Pegawai
+    Route::get('/pegawai', [PegawaiController::class, 'index'])->name('keuangan.pegawai.index');
+    Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('keuangan.pegawai.create');
+    Route::post('/pegawai', [PegawaiController::class, 'store'])->name('keuangan.pegawai.store');
+    Route::post('/pegawai/assign-user', [PegawaiController::class, 'assignUser'])->name('keuangan.pegawai.assign-user');
+    Route::post('/pegawai/unassign-user', [PegawaiController::class, 'unassignUser'])->name('keuangan.pegawai.unassign-user');
+    Route::post('/pegawai/check-nip-user', [PegawaiController::class, 'checkUserByNip'])->name('keuangan.pegawai.check-nip-user');
+    Route::get('/pegawai/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('keuangan.pegawai.edit');
+    Route::put('/pegawai/{pegawai}', [PegawaiController::class, 'update'])->name('keuangan.pegawai.update');
+    Route::delete('/pegawai/{pegawai}', [PegawaiController::class, 'destroy'])->name('keuangan.pegawai.destroy');
+    Route::get('/pegawai/{pegawai}', [PegawaiController::class, 'show'])->name('keuangan.pegawai.show'); 
 });
 
 

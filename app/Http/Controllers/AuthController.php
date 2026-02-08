@@ -29,13 +29,10 @@ class AuthController extends Controller
         'password' => 'required',
     ]);
 
+    $credentials['status'] = true;
+
     if (Auth::attempt($credentials)) {
         $request->session()->regenerate();
-
-        $user = Auth::user();
-        $roleName = $user->role->name ?? '';
-
-      
         return redirect()->intended('/dashboard');
     }
 
@@ -49,8 +46,6 @@ class AuthController extends Controller
     }
 
     public function register(Request $request){
-       
-
         $validated = $request->validate([
         'nip' => 'required',
         'name' => 'required',
@@ -78,6 +73,7 @@ class AuthController extends Controller
     $user->password = Hash::make($request->password);
     $user->role_id = $role_id;
     $user->bidang = $request->bidang;
+    $user->status = true;
     $user->save();
 
     logActivity('Create', "Membuat User Baru {$user->nip}", 'spj');

@@ -81,10 +81,10 @@
              ],
              (object) [
                  'type' => 'item',
-                 'title' => 'Register',
-                 'path' => 'register',
-                 'icon' => 'fas fa-fw fa-user-plus',
-                 'active_key' => 'register',
+                 'title' => 'Pegawai',
+                 'path' => route('keuangan.pegawai.index'),
+                 'icon' => 'fas fa-fw fa-user-tie',
+                 'active_key' => 'pegawai',
              ],
              (object) [
                  'type' => 'item',

@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'bidang',
+        'pegawai_id',
+        'role_id',
+        'status',
     ];
 
     /**
@@ -52,4 +55,8 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function pegawai()
+    {
+        return $this->belongsTo(Pegawai::class);
+    }
 }

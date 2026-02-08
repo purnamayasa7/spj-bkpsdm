@@ -6,13 +6,13 @@
 
         <div class="d-flex gap-4">
             @if (Auth::user()->role_id === 1)
-                <a href="{{ route('spj.keuangan.index') }}" class="btn btn-outline-secondary btn-sm"
+                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-sm"
                     style="margin-right: 10px">
-                    <i class="fas fa-arrow-left {{ url()->previous() }}"></i> Kembali
+                    <i class="fas fa-arrow-left"></i> Kembali
                 </a>
             @elseif (Auth::user()->role_id === 2)
-                <a href="{{ route('spj.index') }}" class="btn btn-outline-secondary btn-sm" style="margin-right: 10px">
-                    <i class="fas fa-arrow-left {{ url()->previous() }}"></i> Kembali
+                <a href=" {{ url()->previous() }}" class="btn btn-outline-secondary btn-sm" style="margin-right: 10px">
+                    <i class="fas fa-arrow-left"></i> Kembali
                 </a>
             @endif
 

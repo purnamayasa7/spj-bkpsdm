@@ -21,7 +21,7 @@
     {{-- Modal Cetak Kuitansi --}}
     <div class="modal fade" id="modalKuitansi" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <form id="formKuitansi" method="POST" target="_blank" action="{{ route('kuitansi.preview') }}">
 
                 @csrf
@@ -47,7 +47,7 @@
 
                         <div class="mb-3">
                             <label class="form-label">Untuk Pembayaran</label>
-                            <textarea name="untuk_pembayaran" class="form-control" rows="7" required></textarea>
+                            <textarea name="untuk_pembayaran" class="form-control" rows="7" placeholder="Deskripsikan Keterangan Untuk Pembayaran" required></textarea>
                         </div>
 
                         <div class="mb-3">

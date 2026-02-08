@@ -154,6 +154,20 @@
         $(document).ready(function() {
             $('#loadingText').show();
 
+            let table = $('#pegawaiTable').DataTable({
+                autoWidth: false, 
+                responsive: true, 
+                initComplete: function() {
+                    $('#loadingText').fadeOut(200, function() {
+                        $('#pegawaiTable').fadeIn(300);
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#loadingText').show();
+
             let table = $('#spjTableKeuangan').DataTable({
                 order: [
                     [9, 'desc']
