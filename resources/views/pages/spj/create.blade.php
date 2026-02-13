@@ -254,7 +254,7 @@
 
             const pptkMap = {
                 'PKA': 'Ni Komang Sutrisni, S.Pd',
-                'PPI': 'Made Herry Hermawan, S.STP., M.A.P',
+                'PPI': 'Putu Ayu Willy Indah Sari, SE.,M.A.P',
                 'MP': 'I Gede Arsana, S.Sos',
                 'PKAP': 'I Gusti Kade Ria Prisahatna, SH',
                 'Sekretariat': 'Made Herry Hermawan, S.STP., M.A.P'
