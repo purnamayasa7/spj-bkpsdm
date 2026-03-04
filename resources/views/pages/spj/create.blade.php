@@ -47,7 +47,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">Untuk Pembayaran</label>
-                            <textarea name="untuk_pembayaran" class="form-control" rows="7" placeholder="Deskripsikan Keterangan Untuk Pembayaran" required></textarea>
+                            <textarea name="untuk_pembayaran" class="form-control" rows="7"
+                                placeholder="Deskripsikan Keterangan Untuk Pembayaran" required></textarea>
                         </div>
 
                         <div class="mb-3">
@@ -65,6 +66,167 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary py-1"><i class="fas fa-print"></i> Cetak</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Modal Cetak Daftar Penerimaan --}}
+    {{-- <div class="modal fade" id="modalDaftarPenerimaan1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <form method="POST" target="_blank" action="{{ route('daftar-penerimaan.preview') }}">
+                @csrf
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cetak Daftar Penerimaan</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Dalam Rangka</label>
+                            <input type="text" name="dalam_rangka" class="form-control" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Tanggal Mulai</label>
+                                <input type="date" name="tanggal_mulai" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>Tanggal Selesai</label>
+                                <input type="date" name="tanggal_selesai" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <table class="table table-bordered" id="tablePenerimaan">
+                            <thead>
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="20%">NIP</th>
+                                    <th width="20%">Nama</th>
+                                    <th>Jabatan</th>
+                                    <th>Pangkat</th>
+                                    <th>Hari</th>
+                                    <th>Penginapan</th>
+                                    <th>Uang Harian</th>
+                                    <th>Representasi</th>
+                                    <th>Transport</th>
+                                    <th>Tiket</th>
+                                    <th>Jumlah</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                        <button type="button" class="btn btn-success btn-sm" onclick="addRow()">
+                            + Tambah Pegawai
+                        </button>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label>Yang Menerima</label>
+                            <input type="text" name="yang_menerima" class="form-control" required>
+                        </div>
+
+                        <input type="hidden" name="pptk" id="d_pptk">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary py-1"><i class="fas fa-print"></i>Cetak</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div> --}}
+
+    <div class="modal fade" id="modalDaftarPenerimaan">
+        <div class="modal-dialog modal-xl">
+            <form method="POST" target="_blank" action="{{ route('daftar-penerimaan.preview') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Buat Daftar Penerimaan
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Dalam Rangka</label>
+                                <input type="text" name="dalam_rangka" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Tanggal Mulai</label>
+                                <input type="date" name="tanggal_mulai" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Tanggal Selesai</label>
+                                <input type="date" name="tanggal_selesai" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="table-scroll">
+                            <table class="table table-bordered" id="tablePegawai">
+                                <thead>
+                                    <tr>
+                                        <th>Nama / NIP</th>
+                                        <th>Hari</th>
+                                        <th>Penginapan</th>
+                                        <th>Uang Harian</th>
+                                        <th>Uang Representasi</th>
+                                        <th>Transport</th>
+                                        <th>Tiket</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button type="button" class="btn btn-success" onclick="addPegawai()">
+                            Tambah Pegawai
+                        </button>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Yang Menerima</label>
+                                <input type="text" class="form-control" id="searchPenerima" autocomplete="off"
+                                    required>
+                                <input type="hidden" name="yang_menerima" id="nama_penerima">
+                                <input type="hidden" name="nip_penerima" id="nip_penerima">
+                                <div class="list-group pegawai-list" id="list-penerima"></div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="pptk" id="d_pptk">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">
+                            Cetak PDF
+                        </button>
                     </div>
                 </div>
             </form>
@@ -186,6 +348,7 @@
                             @php
                                 $dokumens = [
                                     'Kuitansi',
+                                    'Daftar Penerimaan',
                                     'Bukti Pembelian',
                                     'BAST dan Lampiran',
                                     'BAP dan Lampiran',
@@ -198,7 +361,6 @@
                                     'Nota Dinas',
                                     'Dokumen Persiapan Pengadaan (DPP)',
                                     'Surat Perintah Pengiriman (SPP)/(SPMK)',
-                                    'Daftar Penerimaan',
                                     'Surat Tugas',
                                     'SPD Lampiran',
                                     'Rincian Biaya',
@@ -228,6 +390,13 @@
                                                     Cetak
                                                 </button>
                                             @endif
+
+                                            {{-- @if ($dokumen === 'Daftar Penerimaan')
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    onclick="openModalDaftarPenerimaan()">
+                                                    Cetak
+                                                </button>
+                                            @endif --}}
                                         </div>
                                     </td>
                                 </tr>
@@ -244,6 +413,47 @@
             </form>
         </div>
     </div>
+
+    <style>
+        .pegawai-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 500px;
+            z-index: 9999;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-scroll table {
+            min-width: 1400px;
+        }
+
+        #tablePegawai th,
+        #tablePegawai td {
+            white-space: nowrap;
+        }
+
+        #tablePegawai input {
+            min-width: 120px;
+        }
+
+        #list-penerima {
+            position: absolute;
+            z-index: 999999;
+            width: 500px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -420,6 +630,17 @@
             new bootstrap.Modal(document.getElementById('modalKuitansi')).show();
         }
 
+        function openModalDaftarPenerimaan() {
+
+            document.getElementById('d_pptk').value =
+                document.getElementById('pptk').value;
+
+            new bootstrap.Modal(
+                document.getElementById('modalDaftarPenerimaan')
+            ).show();
+
+        }
+
         document.getElementById('kode_rekening').addEventListener('input', function() {
             // hanya angka
             let raw = this.value.replace(/\D/g, '');
@@ -441,6 +662,240 @@
         });
         document.getElementById('nilai').addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+
+        function addPegawai() {
+
+            let id = Date.now();
+
+            let html = `
+<tr>
+
+<td>
+
+<input type="text"
+class="form-control searchPegawai"
+data-id="${id}"
+autocomplete="off">
+
+<input type="hidden" name="nama[]">
+<input type="hidden" name="nip[]">
+<input type="hidden" name="jabatan[]">
+<input type="hidden" name="pangkat[]">
+
+</td>
+
+
+<td>
+<input type="number"
+name="lama_hari[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="penginapan[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="uang_harian[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="uang_representasi[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="transportasi[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="tiket[]"
+class="form-control">
+</td>
+
+
+<td>
+
+<button
+type="button"
+class="btn btn-danger"
+onclick="removeRow(this)">
+
+X
+
+</button>
+
+</td>
+
+
+</tr>
+`;
+
+            $('#tablePegawai tbody').append(html);
+
+            $('body').append(`
+<div class="pegawai-list list-group" id="list-${id}"></div>
+`);
+
+        }
+
+        function removeRow(btn) {
+            $(btn).closest('tr').remove();
+        }
+
+        $(document).on('keyup', '.searchPegawai', function() {
+
+            let input = $(this);
+
+            let id = input.data('id');
+
+            let list = $('#list-' + id);
+
+            let offset = input.offset();
+
+            list.css({
+
+                top: offset.top + input.outerHeight(),
+
+                left: offset.left,
+
+                width: input.outerWidth() + 300
+
+            }).show();
+
+            $.get(
+                "{{ route('pegawai.search') }}", {
+                    q: input.val()
+                },
+                function(res) {
+
+                    let html = '';
+
+                    res.forEach(p => {
+
+                        html += `
+<a href="#"
+class="list-group-item list-group-item-action pilih"
+data-id="${id}"
+data-nama="${p.nama}"
+data-nip="${p.nip}"
+data-jabatan="${p.jabatan}"
+data-pangkat="${p.pangkat}">
+
+<div style="display:flex; justify-content:space-between;">
+
+<span>${p.nama}</span>
+
+<span>${p.nip}</span>
+
+</div>
+
+</a>
+`;
+
+                    });
+                    list.html(html);
+                }
+            );
+        });
+
+        $('#searchPenerima').on('keyup', function() {
+
+            let input = this;
+
+            let rect = input.getBoundingClientRect();
+
+            let list = $('#list-penerima');
+
+            list.css({
+
+                position: 'fixed',
+
+                top: rect.bottom,
+
+                left: rect.left,
+
+                width: rect.width,
+
+                zIndex: 999999
+
+            }).show();
+
+
+            $.get("{{ route('pegawai.search') }}", {
+
+                q: input.value
+
+            }, function(res) {
+
+                let html = '';
+
+                res.forEach(p => {
+
+                    html += `
+<a href="#"
+class="list-group-item list-group-item-action pilih-penerima"
+data-nama="${p.nama}"
+data-nip="${p.nip}">
+
+<div style="display:flex; justify-content:space-between;">
+<span>${p.nama}</span>
+<span>${p.nip}</span>
+</div>
+
+</a>
+`;
+
+                });
+
+                list.html(html);
+
+            });
+
+        });
+
+        $(document).on('click', '.pilih', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+            let input = $('.searchPegawai[data-id="' + id + '"]');
+            let row = input.closest('tr');
+
+            row.find('[name="nama[]"]').val($(this).data('nama'));
+            row.find('[name="nip[]"]').val($(this).data('nip'));
+            row.find('[name="jabatan[]"]').val($(this).data('jabatan'));
+            row.find('[name="pangkat[]"]').val($(this).data('pangkat'));
+            input.val($(this).data('nama'));
+
+            $('#list-' + id).hide();
+        });
+
+        $(document).on('click', '.pilih-penerima', function(e) {
+            e.preventDefault();
+            $('#searchPenerima').val($(this).data('nama'));
+            $('#nama_penerima').val($(this).data('nama'));
+            $('#nip_penerima').val($(this).data('nip'));
+            $('#list-penerima').hide();
+        });
+
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.searchPegawai, .pegawai-list').length) {
+                $('.pegawai-list').hide();
+            }
         });
     </script>
 @endsection

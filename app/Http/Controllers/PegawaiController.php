@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Pegawai;
-use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -178,5 +177,14 @@ class PegawaiController extends Controller
         return response()->json([
             'exists' => false
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $pegawai = Pegawai::where('nama', 'like', "%$request->q%")
+            ->orWhere('nip', 'like', "%$request->q%")
+            ->limit(10)
+            ->get();
+        return response()->json($pegawai);
     }
 }

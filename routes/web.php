@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\DaftarPenerimaanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelengkapanController;
 use App\Http\Controllers\KuitansiController;
@@ -13,10 +14,6 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SpjFileController;
 use App\Http\Controllers\SpjHistoryController;
-use App\Models\Kelengkapan;
-use App\Models\Spj;
-use Illuminate\Routing\RouteRegistrar;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -103,6 +100,8 @@ Route::get('/spj/{id}/edit', [SpjController::class, 'edit'])->name('spj.edit');
 Route::post('/spj/{id}/update', [SpjController::class, 'update'])->name('spj.update');
 Route::get('/spj/{id}', [SpjController::class, 'show'])->name('spj.show');
 Route::post('/kuitansi/preview', [KuitansiController::class, 'preview'])->name('kuitansi.preview');
+Route::post('/daftar-penerimaan/preview', [DaftarPenerimaanController::class, 'preview'])->name('daftar-penerimaan.preview');
+Route::get('/pegawai/search', [PegawaiController::class, 'search'])->name('pegawai.search');
 
 
 

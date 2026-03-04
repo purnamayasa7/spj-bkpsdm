@@ -1,6 +1,8 @@
-@extends('layouts.pdf')
+<!DOCTYPE html>
+<html>
 
-@section('content')
+<head>
+    <meta charset="utf-8">
     <style>
         body {
             font-family: 'Times New Roman', serif;
@@ -12,7 +14,11 @@
         }
 
         .header img {
-            width: 80px;
+            width: 60px;
+        }
+
+        .title-header {
+            font-size: 14px;
         }
 
         .title {
@@ -49,18 +55,42 @@
         .right {
             text-align: right;
         }
+
+        hr {
+            border: 1px solid black;
+        }
     </style>
 
+</head>
+
+<body>
     <div class="header">
-        <img src="{{ public_path('logo.png') }}" alt="Logo">
-        <div><strong>PEMERINTAH KABUPATEN BULELENG</strong></div>
-        <div><strong>BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA</strong></div>
-        <div>Alamat: Jalan Laksamana (LC) Baktiseraga, Singaraja, Bali</div>
+
+        <table style="border:none; width:auto; margin:0 auto;">
+            <tr>
+
+                {{-- LOGO --}}
+                <td style="border:none; vertical-align:middle;">
+                    <img src="{{ public_path('images/KabBuleleng.png') }}">
+                </td>
+
+                {{-- TEXT --}}
+                <td class="title-header" style="border:none; text-align:center; line-height:1.5;">
+                    <div><strong>PEMERINTAH KABUPATEN BULELENG</strong></div>
+                    <div><strong>BADAN KEPEGAWAIAN DAN PENGEMBANGAN SUMBER DAYA MANUSIA</strong></div>
+                    <div>Alamat: Jalan Laksamana (LC) Baktiseraga, Singaraja, Bali</div>
+                </td>
+
+            </tr>
+        </table>
+
     </div>
 
     <hr>
 
-    <div class="title">DAFTAR PENERIMAAN PERJALANAN DINAS</div>
+    <div class="title">
+        DAFTAR PENERIMAAN PERJALANAN DINAS
+    </div>
 
     <p style="text-align:center;">
         Dalam Rangka {{ $dalam_rangka }} <br>
@@ -79,6 +109,7 @@
                 <th>Jumlah</th>
                 <th>Tanda Tangan</th>
             </tr>
+
             <tr>
                 <th></th>
                 <th></th>
@@ -93,12 +124,16 @@
                 <th></th>
                 <th></th>
             </tr>
+
         </thead>
         <tbody>
             @foreach ($items as $i => $row)
                 <tr>
                     <td class="center">{{ $i + 1 }}</td>
-                    <td>{{ $row->nama }}<br>NIP. {{ $row->nip }}</td>
+                    <td>
+                        {{ $row->nama }}<br>
+                        NIP. {{ $row->nip }}
+                    </td>
                     <td>{{ $row->jabatan }}</td>
                     <td>{{ $row->pangkat }}</td>
                     <td class="center">{{ $row->lama_hari }}</td>
@@ -111,9 +146,17 @@
                     <td></td>
                 </tr>
             @endforeach
+
             <tr>
-                <td colspan="10" class="center"><strong>JUMLAH</strong></td>
-                <td class="right"><strong>{{ number_format($total, 0, ',', '.') }}</strong></td>
+
+                <td colspan="10" class="center">
+                    <strong>JUMLAH</strong>
+                </td>
+
+                <td class="right">
+                    <strong>{{ number_format($total, 0, ',', '.') }}</strong>
+                </td>
+
                 <td></td>
             </tr>
         </tbody>
@@ -123,17 +166,45 @@
 
     <table class="no-border">
         <tr>
-            <td class="center">Mengetahui,<br>Pengguna
-                Anggaran<br><br><br><strong>{{ $pengguna_anggaran }}</strong><br>NIP. {{ $nip_pengguna_anggaran }}</td>
+            <td class="center">
+                Mengetahui,<br>
+                Pengguna Anggaran
+
+                <br><br><br>
+
+                <strong>{{ $pengguna_anggaran }}</strong>
+                <br>
+                NIP. {{ $nip_pengguna_anggaran }}
+            </td>
+
             <td></td>
-            <td class="center">Singaraja, {{ $tanggal_cetak }}<br>Yang
-                Menerima<br><br><br><strong>{{ $yang_menerima }}</strong><br>NIP. {{ $nip_penerima }}</td>
-        </tr>
-        <tr>
+
+            <td class="center">
+                PPTK <br>
+                <br><br><br>
+
+                <strong>{{ $pptk }}</strong>
+
+                <br>
+                NIP. {{ $nip_pptk }}
+            </td>
             <td></td>
-            <td class="center">PPTK Pengadaan, Pemberhentian dan
-                Informasi<br><br><br><strong>{{ $pptk }}</strong><br>NIP. {{ $nip_pptk }}</td>
-            <td></td>
+
+            <td class="center">
+                Singaraja, {{ $tanggal_cetak }}
+                <br>
+                Yang Menerima
+                <br><br><br>
+
+                <strong>{{ $yang_menerima }}</strong>
+
+                <br>
+
+                NIP. {{ $nip_penerima }}
+
+            </td>
         </tr>
     </table>
-@endsection
+</body>
+
+</html>
