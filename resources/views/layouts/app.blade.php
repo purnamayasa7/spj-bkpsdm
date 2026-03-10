@@ -157,6 +157,7 @@
             let table = $('#pegawaiTable').DataTable({
                 autoWidth: false, 
                 responsive: true, 
+                ordering: false,
                 initComplete: function() {
                     $('#loadingText').fadeOut(200, function() {
                         $('#pegawaiTable').fadeIn(300);

@@ -170,7 +170,7 @@
                 Mengetahui,<br>
                 Pengguna Anggaran
 
-                <br><br><br>
+                <br><br><br><br>
 
                 <strong>{{ $pengguna_anggaran }}</strong>
                 <br>
@@ -181,7 +181,7 @@
 
             <td class="center">
                 PPTK <br>
-                <br><br><br>
+                <br><br><br><br>
 
                 <strong>{{ $pptk }}</strong>
 
@@ -194,7 +194,7 @@
                 Singaraja, {{ $tanggal_cetak }}
                 <br>
                 Yang Menerima
-                <br><br><br>
+                <br><br><br><br>
 
                 <strong>{{ $yang_menerima }}</strong>
 

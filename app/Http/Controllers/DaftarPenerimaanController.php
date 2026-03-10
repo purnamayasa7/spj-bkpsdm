@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pegawai;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,6 +55,8 @@ class DaftarPenerimaanController extends Controller
             }
         }
 
+        $pptkpegawai = Pegawai::where('nama', $request->pptk)->first();
+        $nip_pptk = $pptkpegawai ? $pptkpegawai->nip : '';
 
         $data = [
 
@@ -77,7 +80,7 @@ class DaftarPenerimaanController extends Controller
 
             'pptk' => $request->pptk,
 
-            'nip_pptk' => '197xxxxx',
+            'nip_pptk' => $nip_pptk,
 
             'yang_menerima' => $request->yang_menerima,
 

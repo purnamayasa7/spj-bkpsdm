@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::all();
+        $user = User::orderBy('created_at', 'asc')->get();
         return view('pages.spj.user', compact('user'));
     }
 
@@ -50,14 +50,14 @@ class UserController extends Controller
 
         $user = User::findOrFail($userId);
 
-    
-    if (!Hash::check($request->input('old_password'), $user->password)) {
-        return back()->with('error', 'Password lama tidak sesuai.');
-    }
 
-    $user->password = Hash::make($request->input('new_password'));
-    $user->save();
+        if (!Hash::check($request->input('old_password'), $user->password)) {
+            return back()->with('error', 'Password lama tidak sesuai.');
+        }
 
-    return redirect('/dashboard')->with('success', 'Password berhasil diubah.');
+        $user->password = Hash::make($request->input('new_password'));
+        $user->save();
+
+        return redirect('/dashboard')->with('success', 'Password berhasil diubah.');
     }
 }

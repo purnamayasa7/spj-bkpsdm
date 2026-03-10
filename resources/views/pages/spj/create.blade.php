@@ -169,7 +169,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label>Dalam Rangka</label>
-                                <input type="text" name="dalam_rangka" class="form-control" required>
+                                <input type="text" name="dalam_rangka" id="dalam_rangka" class="form-control" required>
                             </div>
 
                             <div class="col-md-3">
@@ -630,17 +630,6 @@
             new bootstrap.Modal(document.getElementById('modalKuitansi')).show();
         }
 
-        function openModalDaftarPenerimaan() {
-
-            document.getElementById('d_pptk').value =
-                document.getElementById('pptk').value;
-
-            new bootstrap.Modal(
-                document.getElementById('modalDaftarPenerimaan')
-            ).show();
-
-        }
-
         document.getElementById('kode_rekening').addEventListener('input', function() {
             // hanya angka
             let raw = this.value.replace(/\D/g, '');
@@ -660,10 +649,21 @@
 
             this.value = result.join(' ');
         });
+
         document.getElementById('nilai').addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
 
+        function openModalDaftarPenerimaan() {
+            document.getElementById('d_pptk').value =
+                document.getElementById('pptk').value;
+
+            new bootstrap.Modal(document.getElementById('modalDaftarPenerimaan')).show();
+
+            // let kegiatan = document.getElementById('kegitan').value;
+
+            // document.getElementById('dalam_rangka').value = kegiatan;
+        }
 
         function addPegawai() {
 
@@ -759,23 +759,15 @@ X
         }
 
         $(document).on('keyup', '.searchPegawai', function() {
-
             let input = $(this);
-
             let id = input.data('id');
-
             let list = $('#list-' + id);
-
             let offset = input.offset();
 
             list.css({
-
                 top: offset.top + input.outerHeight(),
-
                 left: offset.left,
-
                 width: input.outerWidth() + 300
-
             }).show();
 
             $.get(
@@ -783,11 +775,8 @@ X
                     q: input.val()
                 },
                 function(res) {
-
                     let html = '';
-
                     res.forEach(p => {
-
                         html += `
 <a href="#"
 class="list-group-item list-group-item-action pilih"
@@ -815,38 +804,23 @@ data-pangkat="${p.pangkat}">
         });
 
         $('#searchPenerima').on('keyup', function() {
-
             let input = this;
-
             let rect = input.getBoundingClientRect();
-
             let list = $('#list-penerima');
 
             list.css({
-
                 position: 'fixed',
-
                 top: rect.bottom,
-
                 left: rect.left,
-
                 width: rect.width,
-
                 zIndex: 999999
-
             }).show();
 
-
             $.get("{{ route('pegawai.search') }}", {
-
                 q: input.value
-
             }, function(res) {
-
                 let html = '';
-
                 res.forEach(p => {
-
                     html += `
 <a href="#"
 class="list-group-item list-group-item-action pilih-penerima"
@@ -862,11 +836,13 @@ data-nip="${p.nip}">
 `;
 
                 });
-
                 list.html(html);
-
             });
+        });
 
+        // Get kegiatan value
+        $('#kegiatan').on('keyup change', function() {
+            $('#dalam_rangka').val($(this).val());
         });
 
         $(document).on('click', '.pilih', function(e) {
