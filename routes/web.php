@@ -8,6 +8,7 @@ use App\Http\Controllers\DaftarPenerimaanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelengkapanController;
 use App\Http\Controllers\KuitansiController;
+use App\Http\Controllers\LampiranSpdController;
 use App\Http\Controllers\SpjController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
@@ -47,8 +48,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/spj/{id}/download-zip', [SpjController::class, 'downloadZip'])->name('spj.downloadZip')->middleware('role:Keuangan,Bidang');
 
-Route::get('/spj/search-results', [SpjController::class, 'searchResults'])
-    ->name('spj.searchResults');
+Route::get('/spj/search-results', [SpjController::class, 'searchResults'])->name('spj.searchResults');
 
 Route::get('/spj/export/pdf', [SpjController::class, 'exportPdf'])->name('spj.export.pdf');
 Route::get('/spj/export/excel', [SpjController::class, 'exportExcel'])->name('spj.export.excel');
@@ -101,6 +101,7 @@ Route::post('/spj/{id}/update', [SpjController::class, 'update'])->name('spj.upd
 Route::get('/spj/{id}', [SpjController::class, 'show'])->name('spj.show');
 Route::post('/kuitansi/preview', [KuitansiController::class, 'preview'])->name('kuitansi.preview');
 Route::post('/daftar-penerimaan/preview', [DaftarPenerimaanController::class, 'preview'])->name('daftar-penerimaan.preview');
+Route::post('/lampiran-spd/preview', [LampiranSpdController::class, 'preview'])->name('lampiran-spd.preview');
 Route::get('/pegawai/search', [PegawaiController::class, 'search'])->name('pegawai.search');
 
 

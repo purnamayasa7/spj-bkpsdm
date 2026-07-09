@@ -6,6 +6,8 @@
             <th>Bidang</th>
             <th>Kegiatan</th>
             <th>Nilai</th>
+            <th>Belanja</th>
+            <th>Keterangan</th>
             <th>Status</th>
             <th>Tanggal SPJ</th>
         </tr>
@@ -19,6 +21,8 @@
             <td>{{ $row->bidang }}</td>
             <td>{{ $row->kegiatan }}</td>
             <td>{{ $row->nilai }}</td>
+            <td>{{ $row->belanja }}</td>
+            <td>{{ $row->keterangan }}</td>
             <td>{{ $row->status }}</td>
             <td>{{ $row->tanggal_spj }}</td>
         </tr>

@@ -17,72 +17,74 @@ class AuthController extends Controller
 
         return view('pages.auth.login');
     }
-    
+
     public function authenticate(Request $request)
     {
         if (Auth::check()) {
-        return back();
+            return back();
+        }
+
+        $credentials = $request->validate([
+            'nip' => 'required|digits:18',
+            'password' => 'required',
+        ]);
+
+        $credentials['status'] = true;
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/dashboard');
+        }
+
+        return back()->withErrors([
+            'nip' => 'Terjadi kesalahan, periksa kembali username atau password anda.',
+        ])->onlyInput('nip');
     }
 
-    $credentials = $request->validate([
-        'nip' => 'required|digits:18',
-        'password' => 'required',
-    ]);
-
-    $credentials['status'] = true;
-
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        return redirect()->intended('/dashboard');
-    }
-
-    return back()->withErrors([
-        'nip' => 'Terjadi kesalahan, periksa kembali username atau password anda.',
-    ])->onlyInput('nip');
-    }
-
-    public function registerView(){
+    public function registerView()
+    {
         return view('pages.auth.register');
     }
 
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $validated = $request->validate([
-        'nip' => 'required',
-        'name' => 'required',
-        'email' => 'required|email',
-        'password' => 'required',
-        'role_id' => 'required',
-        'bidang' => 'required',
-    ]);
+            'nip' => 'required',
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'role_id' => 'required',
+            'bidang' => 'required',
+        ]);
 
-    // Konversi manual
-    $role_id = match ($request->input('role_id')) {
-        'Keuangan' => 1,
-        'Bidang' => 2,
-        default => null,
-    };
+        // Konversi manual
+        $role_id = match ($request->input('role_id')) {
+            'Keuangan' => 1,
+            'Bidang' => 2,
+            default => null,
+        };
 
-    if (!$role_id) {
-        return back()->withErrors(['role_id' => 'Role tidak valid']);
-    }
+        if (!$role_id) {
+            return back()->withErrors(['role_id' => 'Role tidak valid']);
+        }
 
-    $user = new User();
-    $user->nip = $request->nip;
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->password = Hash::make($request->password);
-    $user->role_id = $role_id;
-    $user->bidang = $request->bidang;
-    $user->status = true;
-    $user->save();
+        $user = new User();
+        $user->nip = $request->nip;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role_id = $role_id;
+        $user->bidang = $request->bidang;
+        $user->status = true;
+        $user->save();
 
-    logActivity('Create', "Membuat User Baru {$user->nip}", 'spj');
+        logActivity('Create', "Membuat User Baru {$user->nip}", 'spj');
 
-    return redirect('/register')->with('success', 'Berhasil mendaftarkan akun');
+        return redirect('/register')->with('success', 'Berhasil mendaftarkan akun');
     }
 
     public function logout(Request $request)
-    {  
+    {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

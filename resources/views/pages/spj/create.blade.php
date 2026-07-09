@@ -233,6 +233,131 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalLampiranSpd">
+        <div class="modal-dialog modal-xl">
+            <form method="POST" target="_blank" action="{{ route('lampiran-spd.preview') }}">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            Buat Lampiran SPD
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Nomor</label>
+                                <input type="text" name="nomor_lampiran" id="nomor" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Tanggal</label>
+                                <input type="date" name="tanggal_lampiran" class="form-control" required>
+                            </div>
+
+                        </div>
+
+
+                        <hr>
+
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Daftar Peserta Kegiatan</label>
+                                <input type="text" name="daftar_peserta" id="daftar_peserta" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Tanggal Penyelenggaraan</label>
+                                <input type="date" name="tgl_penyelenggaraan" id="tgl_penyelenggaraan"
+                                    class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Kota Penyelenggaraan</label>
+                                <input type="text" name="kota" id="kota" class="form-control" required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Satuan Kerja</label>
+                                <input type="text" name="satuan_kerja" id="satuan_kerja" class="form-control"
+                                    required>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Nomor Surat Tugas</label>
+                                <input type="text" name="no_surat_tugas" id="no_surat_tugas" class="form-control"
+                                    required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tanggal Surat Tugas</label>
+                                <input type="date" name="tgl_surat_tugas" id="tgl_surat_tugas" class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label>Tanggal Keberangkatan</label>
+                                <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control"
+                                    required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tanggal Kembali</label>
+                                <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control"
+                                    required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Lamanya Perjalanan</label>
+                                <input type="text" name="lama_perjalanan" id="lama_perjalanan" class="form-control"
+                                    readonly>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="table-scroll">
+                            <table class="table table-bordered" id="tablePegawai">
+                                <thead>
+                                    <tr>
+                                        <th>Nama / NIP</th>
+                                        <th>Tempat Kedudukan</th>
+                                        <th>Tingkat Biaya</th>
+                                        <th>Alat Angkutan</th>
+                                        <th>Keterangan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <button type="button" class="btn btn-success" onclick="addPegawaiLampiranSpd()">
+                            Tambah Pegawai
+                        </button>
+
+                        <hr>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">
+                            Cetak PDF
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="card shadow mb-4">
         <div class="card-body">
             <form id="formSpj" action="{{ url('/spj') }}" method="POST" enctype="multipart/form-data">
@@ -391,12 +516,19 @@
                                                 </button>
                                             @endif
 
-                                            {{-- @if ($dokumen === 'Daftar Penerimaan')
+                                            @if ($dokumen === 'Daftar Penerimaan')
                                                 <button type="button" class="btn btn-sm btn-outline-primary"
                                                     onclick="openModalDaftarPenerimaan()">
                                                     Cetak
                                                 </button>
-                                            @endif --}}
+                                            @endif
+
+                                            @if ($dokumen === 'SPD Lampiran')
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                    onclick="openModalLampiranSPD()">
+                                                    Cetak
+                                                </button>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -586,30 +718,6 @@
             }
         });
 
-        // document.getElementById('bidang').addEventListener('change', function() {
-        //     const bidang = this.value;
-
-        //     if (bidang === 'PKA') {
-        //         document.getElementById('pptk').value = 'Ni Komang Sutrisni, S.Pd';
-        //     }
-
-        //     if (bidang === 'PPI') {
-        //         document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
-        //     }
-
-        //     if (bidang === 'MP') {
-        //         document.getElementById('pptk').value = 'I Gede Arsana, S.Sos';
-        //     }
-
-        //     if (bidang === 'PKAP') {
-        //         document.getElementById('pptk').value = 'I Gusti Kade Ria Prisahatna, SH';
-        //     }
-
-        //     if (bidang === 'Sekretariat') {
-        //         document.getElementById('pptk').value = 'Made Herry Hermawan, S.STP., M.A.P';
-        //     }
-        // });
-
         function openModalKuitansi() {
 
             document.getElementById('k_jenis').value =
@@ -663,6 +771,10 @@
             // let kegiatan = document.getElementById('kegitan').value;
 
             // document.getElementById('dalam_rangka').value = kegiatan;
+        }
+
+        function openModalLampiranSPD() {
+            new bootstrap.Modal(document.getElementById('modalLampiranSpd')).show();
         }
 
         function addPegawai() {
@@ -725,6 +837,81 @@ class="form-control">
 <td>
 <input type="number"
 name="tiket[]"
+class="form-control">
+</td>
+
+
+<td>
+
+<button
+type="button"
+class="btn btn-danger"
+onclick="removeRow(this)">
+
+X
+
+</button>
+
+</td>
+
+
+</tr>
+`;
+
+            $('#tablePegawai tbody').append(html);
+
+            $('body').append(`
+<div class="pegawai-list list-group" id="list-${id}"></div>
+`);
+
+        }
+
+        function addPegawaiLampiranSpd() {
+
+            let id = Date.now();
+
+            let html = `
+<tr>
+
+<td>
+
+<input type="text"
+class="form-control searchPegawai"
+data-id="${id}"
+autocomplete="off">
+
+<input type="hidden" name="nama[]">
+<input type="hidden" name="nip[]">
+<input type="hidden" name="jabatan[]">
+<input type="hidden" name="pangkat[]">
+
+</td>
+
+
+<td>
+<input type="text"
+name="tempat_kedudukan[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="number"
+name="tingkat_biaya[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="text"
+name="alat_angkut[]"
+class="form-control">
+</td>
+
+
+<td>
+<input type="text"
+name="keterangan[]"
 class="form-control">
 </td>
 
@@ -839,6 +1026,30 @@ data-nip="${p.nip}">
                 list.html(html);
             });
         });
+
+        // Hitung lama hari
+        function hitungLamaPerjalanan(){
+            let mulai = document.getElementById('tanggal_mulai').value;
+            let selesai = document.getElementById('tanggal_selesai').value;
+
+            if(mulai && selesai){
+                let start = new Date(mulai);
+                let end = new Date(selesai);
+
+                if(end < start){
+                    alert("Tanggal kembali tidak boleh sebelum tanggal berangkat");
+                    document.getElementById('lama_perjalanan').value="";
+                    return;
+                }
+
+                let selisih = end - start
+                let hari = (selisih / (1000*60*60*24)) + 1;
+                
+                document.getElementById('lama_perjalanan').value = hari;
+            }
+        }
+        document.getElementById('tanggal_mulai').addEventListener('change', hitungLamaPerjalanan);
+        document.getElementById('tanggal_selesai').addEventListener('change', hitungLamaPerjalanan);
 
         // Get kegiatan value
         $('#kegiatan').on('keyup change', function() {
