@@ -41,7 +41,7 @@
 
         <!-- KIRI: JUDUL -->
         <div class="col-md-4 text-left">
-            <h1 class="h3 mb-0 text-gray-800">Data-SPJ</h1>
+            <h1 class="h3 mb-0 text-gray-800">Data SPJ</h1>
         </div>
 
         <!-- TENGAH: PERIODE -->
