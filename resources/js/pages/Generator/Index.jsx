@@ -328,7 +328,7 @@ export default function GeneratorIndex() {
                 <div className="bg-linear-to-r from-[#2a4574] via-[#375a98] to-[#476eb8] rounded-2xl p-6 text-white shadow-sm">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-slate-900/15 text-white backdrop-blur-xs mb-2">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-white backdrop-blur-xs mb-2">
                                 <Receipt className="w-3.5 h-3.5" />
                                 <span>Template Resmi BKPSDM Kabupaten Buleleng</span>
                             </span>

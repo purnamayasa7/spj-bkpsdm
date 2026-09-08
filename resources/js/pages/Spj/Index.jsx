@@ -119,11 +119,11 @@ export default function SpjIndex({ spj = [], year = '2025' }) {
                 {/* Top Action Bar */}
                 <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 dark:text-slate-100 tracking-tight">
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
                             Data SPJ Saya
                         </h2>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                            Kelola seluruh pengajuan dan riwayat Surat Pertanggungjawaban
+                            Kelola seluruh pengajuan dan riwayat SPJ
                         </p>
                     </div>
 
@@ -208,19 +208,17 @@ export default function SpjIndex({ spj = [], year = '2025' }) {
                                     <button
                                         key={st}
                                         onClick={() => setStatusFilter(st)}
-                                        className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${
-                                            statusFilter === st
+                                        className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 ${statusFilter === st
                                                 ? 'bg-[#2a4574] text-white shadow-xs'
                                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                                        }`}
+                                            }`}
                                     >
                                         <span>{st}</span>
                                         <span
-                                            className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                                                statusFilter === st
-                                                    ? 'bg-white dark:bg-slate-900/20 text-white'
+                                            className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${statusFilter === st
+                                                    ? 'bg-white/20 text-white'
                                                     : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                                            }`}
+                                                }`}
                                         >
                                             {statusCounts[st] || 0}
                                         </span>
@@ -279,10 +277,9 @@ export default function SpjIndex({ spj = [], year = '2025' }) {
                                                 </td>
                                                 <td className="px-4 py-3 text-center whitespace-nowrap">
                                                     <span
-                                                        className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-bold border ${
-                                                            statusBadges[item.status] ||
+                                                        className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-bold border ${statusBadges[item.status] ||
                                                             'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {item.status}
                                                     </span>

@@ -161,7 +161,7 @@ export default function ChecklistPanduan() {
                                 Panduan & 21 Checklist Berkas SPJ
                             </h1>
                             <p className="text-xs sm:text-sm text-blue-100 mt-1 max-w-2xl">
-                                Pedoman kelengkapan administrasi Surat Pertanggungjawaban (SPJ) BKPSDM Kabupaten Buleleng agar proses review dan verifikasi keuangan berjalan cepat dan lancar tanpa koreksi.
+                                Pedoman kelengkapan administrasi SPJ BKPSDM Kabupaten Buleleng agar proses review dan verifikasi keuangan berjalan cepat dan lancar tanpa koreksi.
                             </p>
                         </div>
                         <Link
