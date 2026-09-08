@@ -6,14 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Spj;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
-        $year = now()->year;
+        $year = (int) $request->get('year', now()->year);
 
         if (!in_array($year, [2025, 2026])) {
             $year = 2025;
@@ -31,14 +32,90 @@ class DashboardController extends Controller
         $totalDisetujui = (clone $baseQuery)->where('status', 'Disetujui')->count();
         $totalDitolak   = (clone $baseQuery)->where('status', 'Ditolak')->count();
 
-        // ===== REKAP BIDANG (ROLE 1 SAJA) =====
+        // ===== FINANCIAL METRICS =====
+        $totalNominalDisetujui = (int) (clone $baseQuery)->where('status', 'Disetujui')->sum('nilai');
+        $totalNominalDikirim   = (int) (clone $baseQuery)->where('status', 'Dikirim')->sum('nilai');
+
+        // ===== REKAP BIDANG & ANTREAN REVIEW (ROLE 1 / KEUANGAN) =====
         $rekapBidang = collect();
+        $antreanReview = collect();
+        $recentActivities = collect();
+
         if ($user->role_id === 1) {
             $rekapBidang = Spj::select('bidang', DB::raw('COUNT(*) as total'))
                 ->whereYear('created_at', $year)
                 ->groupBy('bidang')
                 ->orderBy('bidang')
                 ->get();
+
+            $antreanReview = Spj::select('id', 'bidang', 'kegiatan', 'nilai', 'created_at')
+                ->whereYear('created_at', $year)
+                ->where('status', 'Dikirim')
+                ->orderBy('created_at', 'asc')
+                ->take(5)
+                ->get()
+                ->map(function ($s) {
+                    return [
+                        'id' => $s->id,
+                        'bidang' => $s->bidang,
+                        'kegiatan' => $s->kegiatan,
+                        'nilai' => $s->nilai,
+                        'created_at_formatted' => $s->created_at ? $s->created_at->translatedFormat('d M Y') : '-',
+                        'time_ago' => $s->created_at ? $s->created_at->diffForHumans() : '',
+                    ];
+                });
+
+            $recentActivities = \App\Models\Activities::with('user')->latest()->take(7)->get()->map(function ($act) {
+                return [
+                    'id' => $act->id,
+                    'action' => $act->action,
+                    'description' => $act->description,
+                    'bidang' => $act->bidang,
+                    'user_name' => $act->user->name ?? 'User',
+                    'time_ago' => $act->created_at ? $act->created_at->diffForHumans() : '',
+                ];
+            });
+        }
+
+        // ===== WIDGET KHUSUS BIDANG (ROLE 2) =====
+        $perluPerbaikan = collect();
+        $pengajuanTerbaruBidang = collect();
+
+        if ($user->role_id === 2) {
+            $perluPerbaikan = Spj::select('id', 'kegiatan', 'nilai', 'keterangan', 'updated_at')
+                ->whereYear('created_at', $year)
+                ->where('bidang', $user->bidang)
+                ->where('status', 'Dikoreksi')
+                ->latest('updated_at')
+                ->take(5)
+                ->get()
+                ->map(function ($s) {
+                    return [
+                        'id' => $s->id,
+                        'kegiatan' => $s->kegiatan,
+                        'nilai' => $s->nilai,
+                        'keterangan' => $s->keterangan ?: 'Menunggu perbaikan berkas sesuai arahan verifikator.',
+                        'updated_at_formatted' => $s->updated_at ? $s->updated_at->translatedFormat('d M Y') : '-',
+                        'time_ago' => $s->updated_at ? $s->updated_at->diffForHumans() : '',
+                    ];
+                });
+
+            $pengajuanTerbaruBidang = Spj::select('id', 'kegiatan', 'nilai', 'status', 'created_at')
+                ->whereYear('created_at', $year)
+                ->where('bidang', $user->bidang)
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(function ($s) {
+                    return [
+                        'id' => $s->id,
+                        'kegiatan' => $s->kegiatan,
+                        'nilai' => $s->nilai,
+                        'status' => $s->status,
+                        'created_at_formatted' => $s->created_at ? $s->created_at->translatedFormat('d M Y') : '-',
+                        'time_ago' => $s->created_at ? $s->created_at->diffForHumans() : '',
+                    ];
+                });
         }
 
         // ===== REKAP BULANAN =====
@@ -74,24 +151,23 @@ class DashboardController extends Controller
 
         $roleLabel = $user->role_id === 1 ? 'Keuangan' : 'Bidang';
 
-        $recentActivities = collect();
-        if ($user->role_id === 1) {
-            $recentActivities = \App\Models\Activities::latest()->take(7)->get();
-        }
-
-        return view('pages.dashboard', compact(
-            'totalDikirim',
-            'totalDikoreksi',
-            'totalDisetujui',
-            'totalDitolak',
-            'rekapBidang',
-            'rekapData',
-            'bulanLabels',
-            'roleLabel',
-            'user',
-            'recentActivities',
-            'year'
-        ));
+        return Inertia::render('Dashboard/Index', [
+            'totalDikirim' => $totalDikirim,
+            'totalDikoreksi' => $totalDikoreksi,
+            'totalDisetujui' => $totalDisetujui,
+            'totalDitolak' => $totalDitolak,
+            'totalNominalDisetujui' => $totalNominalDisetujui,
+            'totalNominalDikirim' => $totalNominalDikirim,
+            'rekapBidang' => $rekapBidang,
+            'rekapData' => $rekapData,
+            'bulanLabels' => $bulanLabels,
+            'roleLabel' => $roleLabel,
+            'recentActivities' => $recentActivities,
+            'antreanReview' => $antreanReview,
+            'perluPerbaikan' => $perluPerbaikan,
+            'pengajuanTerbaruBidang' => $pengajuanTerbaruBidang,
+            'year' => (string) $year,
+        ]);
     }
 
     // ================= AJAX =================

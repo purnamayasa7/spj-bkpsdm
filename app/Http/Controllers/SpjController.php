@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Exports\SpjExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Inertia\Inertia;
 
 class SpjController extends Controller
 {
@@ -36,7 +37,10 @@ class SpjController extends Controller
             ->latest()
             ->get();
 
-        return view('pages.spj.index', compact('spj', 'year'));
+        return Inertia::render('Spj/Index', [
+            'spj' => $spj,
+            'year' => (string) $year,
+        ]);
     }
 
     public function create()
@@ -57,7 +61,10 @@ class SpjController extends Controller
 
         $previewId = 'SPJ' . $tanggal . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
 
-        return view('pages.spj.create', ['previewId' => $previewId, 'bidangUser' => $user->bidang]);
+        return Inertia::render('Spj/Create', [
+            'previewId' => $previewId,
+            'bidangUser' => $user->bidang,
+        ]);
     }
 
     public function store(Request $request)
@@ -205,7 +212,11 @@ class SpjController extends Controller
 
         $dokumens = array_values(array_diff($allDokumens, $uploadedNames));
 
-        return view('pages.spj.edit', compact('spj', 'kelengkapan', 'dokumens'));
+        return Inertia::render('Spj/Edit', [
+            'spj' => $spj,
+            'kelengkapan' => $kelengkapan,
+            'dokumens' => $dokumens,
+        ]);
     }
 
 
@@ -345,9 +356,10 @@ class SpjController extends Controller
         $spj = Spj::findOrFail($id);
         $kelengkapan = Kelengkapan::where('spj_id', $id)->get();
 
-        return view('pages.spj.show', compact('spj', 'kelengkapan'));
-
-        //return view('spj.show', compact('spj', 'kelengkapan'));
+        return Inertia::render('Spj/Show', [
+            'spj' => $spj,
+            'kelengkapan' => $kelengkapan,
+        ]);
     }
 
     public function destroy($id)
@@ -359,16 +371,48 @@ class SpjController extends Controller
     }
 
     //Function Keuangan Role    
-    public function indexKeuangan()
+    public function indexKeuangan(Request $request)
     {
+        $year = $request->year ?? now()->year;
+
+        if (!in_array((int)$year, [2025, 2026])) {
+            $year = now()->year;
+        }
+
         $spj = Spj::with('kelengkapans')
             ->where('status', 'Dikirim')
+            ->whereYear('created_at', $year)
             ->latest()
             ->get();
 
-        $isDisetujui = false;
+        return Inertia::render('Spj/KeuanganIndex', [
+            'spj' => $spj,
+            'year' => (string) $year,
+            'isDisetujui' => false,
+            'isDikoreksi' => false,
+        ]);
+    }
 
-        return view('pages.spj.keuangan.index', compact('spj', 'isDisetujui'));
+    public function indexKeuanganDikoreksi(Request $request)
+    {
+        $year = $request->year ?? now()->year;
+
+        if (!in_array((int)$year, [2025, 2026])) {
+            $year = now()->year;
+        }
+
+        $spj = Spj::with('kelengkapans')
+            ->where('status', 'Dikoreksi')
+            ->whereYear('created_at', $year)
+            ->latest()
+            ->get();
+
+        return Inertia::render('Spj/KeuanganIndex', [
+            'spj' => $spj,
+            'year' => (string) $year,
+            'isDisetujui' => false,
+            'isDikoreksi' => true,
+        ]);
     }
 
     public function indexKeuanganDisetujui(Request $request)
@@ -387,7 +431,11 @@ class SpjController extends Controller
 
         $isDisetujui = true;
 
-        return view('pages.spj.keuangan.index', compact('spj', 'year', 'isDisetujui'));
+        return Inertia::render('Spj/KeuanganIndex', [
+            'spj' => $spj,
+            'year' => (string) $year,
+            'isDisetujui' => true,
+        ]);
     }
 
     public function review($id)
@@ -395,7 +443,10 @@ class SpjController extends Controller
         $spj = Spj::findOrFail($id);
         $kelengkapan = Kelengkapan::where('spj_id', $id)->get();
 
-        return view('pages.spj.keuangan.review', compact('spj', 'kelengkapan'));
+        return Inertia::render('Spj/Review', [
+            'spj' => $spj,
+            'kelengkapan' => $kelengkapan,
+        ]);
     }
 
     public function submitReview(Request $request, $id)

@@ -7,22 +7,35 @@ use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Inertia\Inertia;
+
 class PegawaiController extends Controller
 {
     public function index()
     {
-        // $pegawais = Pegawai::orderBy('nama')->get();
-
         $pegawais = Pegawai::with('user')
-            ->orderBy('id')
+            ->orderBy('id', 'desc')
             ->get();
 
-        return view('pages.pegawai.pegawai', compact('pegawais'));
+        $unassignedUsers = User::whereNull('pegawai_id')->get(['id', 'name', 'email', 'nip']);
+
+        return Inertia::render('Pegawai/Index', [
+            'pegawais' => $pegawais,
+            'unassignedUsers' => $unassignedUsers,
+        ]);
     }
 
     public function create()
     {
-        return view('pages.pegawai.create');
+        return Inertia::render('Pegawai/Create');
+    }
+
+    public function edit(Pegawai $pegawai)
+    {
+        $pegawai->load('user');
+        return Inertia::render('Pegawai/Edit', [
+            'pegawai' => $pegawai,
+        ]);
     }
 
     public function store(Request $request)
@@ -75,7 +88,10 @@ class PegawaiController extends Controller
 
     public function show(Pegawai $pegawai)
     {
-        return view('pegawai.show', compact('pegawai'));
+        $pegawai->load('user');
+        return Inertia::render('Pegawai/Edit', [
+            'pegawai' => $pegawai,
+        ]);
     }
 
     public function update(Request $request, Pegawai $pegawai)
@@ -87,29 +103,26 @@ class PegawaiController extends Controller
             'golongan'  => 'required',
             'pangkat'   => 'required',
             'bidang'    => 'required',
-            'aktif'     => 'required',
-            'ttd_path'  => 'required',
         ]);
 
         $pegawai->update([
             'nip'       => $request->nip,
             'nama'      => $request->nama,
-            'jabatan'   => $request->jabaran,
+            'jabatan'   => $request->jabatan,
             'golongan'  => $request->golongan,
             'pangkat'   => $request->pangkat,
             'bidang'    => $request->bidang,
-            'aktif'     => $request->aktif,
-            'ttd_path'  => $request->ttd_path,
+            'aktif'     => $request->aktif ?? true,
         ]);
 
-        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diperbarui');
+        return redirect()->route('keuangan.pegawai.index')->with('success', 'Data pegawai berhasil diperbarui');
     }
 
     public function destroy(Pegawai $pegawai)
     {
         $pegawai->delete();
 
-        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil dihapus');
+        return redirect()->route('keuangan.pegawai.index')->with('success', 'Data pegawai berhasil dihapus');
     }
 
     public function assignUser(Request $request)

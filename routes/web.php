@@ -16,6 +16,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\SpjFileController;
 use App\Http\Controllers\SpjHistoryController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 | Route Auth
@@ -37,14 +38,13 @@ Route::get('/profile', [UserController::class, 'profile_view'])->middleware('rol
 Route::post('/profile/{id}', [UserController::class, 'update_profile'])->middleware('role:Keuangan,Bidang');
 Route::get('/change-password', [UserController::class, 'change_password_view'])->middleware('role:Keuangan,Bidang');
 Route::post('/change-password/{id}', [UserController::class, 'change_password'])->middleware('role:Keuangan,Bidang');
+Route::get('/backup', fn() => redirect()->route('backup.index'))->middleware('role:Keuangan');
 
 /*
 | Dashboard (Bisa untuk dua role)
 */
 
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-})->middleware('role:Keuangan,Bidang');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:Keuangan,Bidang');
 
 Route::get('/spj/{id}/download-zip', [SpjController::class, 'downloadZip'])->name('spj.downloadZip')->middleware('role:Keuangan,Bidang');
 
@@ -65,13 +65,13 @@ Route::get('/calendar/spj/events', [CalendarController::class, 'events'])->name(
 */
 Route::prefix('keuangan')->middleware('role:Keuangan')->group(function () {
     Route::get('/spj', [SpjController::class, 'indexKeuangan'])->name('spj.keuangan.index');
+    Route::get('/spj/dikoreksi', [SpjController::class, 'indexKeuanganDikoreksi'])->name('spj.keuangan.dikoreksi');
     Route::get('/spj/disetujui', [SpjController::class, 'indexKeuanganDisetujui'])->name('spj.keuangan.disetujui');
     Route::get('/spj/{id}/review', [SpjController::class, 'review'])->name('spj.keuangan.review');
     Route::post('/spj/{id}/review', [SpjController::class, 'submitReview'])->name('spj.keuangan.review.submit');
     Route::get('/backup', [BackupController::class, 'index'])->name('backup.index');
     Route::get('/spj/{id}/checklist-pdf', [SpjController::class, 'checklistPdf'])->name('spj.checklist.pdf');
-    Route::get('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
-    // Route::post('/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
+    Route::match(['get', 'post'], '/backup/run', [BackupController::class, 'runBackup'])->name('backup.run');
     Route::get('/backup/download', [BackupController::class, 'download'])->name('backup.download');
     // Pegawai
     Route::get('/pegawai', [PegawaiController::class, 'index'])->name('keuangan.pegawai.index');
@@ -123,7 +123,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/spj/file/{kelengkapan}', [SpjController::class, 'viewFile'])->name('spj.file.view');
     Route::get('/spj-history', [SpjHistoryController::class, 'index'])->name('spj.history.index');
     Route::get('/spj/{spj}/history', [SpjHistoryController::class, 'show'])->name('spj.history.show');
+    Route::get('/generator', fn() => Inertia::render('Generator/Index'))->name('generator.index');
+    Route::get('/panduan/checklist', fn() => Inertia::render('Panduan/Checklist'))->name('panduan.checklist');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/data', [DashboardController::class, 'data'])->name('dashboard.data');
+
+

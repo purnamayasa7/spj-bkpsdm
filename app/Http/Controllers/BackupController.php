@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Inertia\Inertia;
 
 class BackupController extends Controller
 {
@@ -27,7 +28,10 @@ class BackupController extends Controller
             $lastSize = Storage::disk('local')->size($lastFile);
         }
 
-        return view('pages.spj.backup', compact('lastBackup', 'lastSize'));
+        return Inertia::render('Backup/Index', [
+            'lastBackup' => $lastBackup ? $lastBackup->format('d-m-Y H:i') : null,
+            'lastSize'   => $lastSize ? round($lastSize / 1024, 2) : null,
+        ]);
     }
 
     public function runBackup()

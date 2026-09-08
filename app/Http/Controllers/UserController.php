@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class UserController extends Controller
 {
     public function index()
     {
         $user = User::orderBy('created_at', 'asc')->get();
-        return view('pages.spj.user', compact('user'));
+        return Inertia::render('User/Index', [
+            'user' => $user,
+        ]);
     }
 
     public function update_profile(Request $request, $userId)
@@ -28,17 +31,17 @@ class UserController extends Controller
         $user->bidang = $request->input('bidang');
         $user->save();
 
-        return redirect('/dashboard')->with('success', 'Berhasil mengubah data');
+        return redirect('/profile')->with('success', 'Berhasil memperbarui data profil');
     }
 
     public function profile_view()
     {
-        return view('pages.profile.index');
+        return Inertia::render('Profile/Index');
     }
 
     public function change_password_view()
     {
-        return view('pages.profile.change-password');
+        return Inertia::render('Profile/ChangePassword');
     }
 
     public function change_password(Request $request, $userId)

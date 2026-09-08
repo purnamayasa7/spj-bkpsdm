@@ -1,11 +1,193 @@
 @import 'tailwindcss';
 
+/* ============================================================
+   Tailwind CSS v4 — Class-based Dark Mode Variant
+   Official approach: https://tailwindcss.com/docs/dark-mode
+   ============================================================ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../**/*.jsx';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* ============================================================
+   SEMANTIC DESIGN TOKENS — Light Mode Defaults
+   Semua komponen menggunakan token ini agar dark mode otomatis
+   ============================================================ */
+:root {
+    /* Surfaces */
+    --color-surface:            #ffffff;       /* bg-white → kartu, modal, panel */
+    --color-surface-secondary:  #f8fafc;       /* bg-slate-50 → page background */
+    --color-surface-raised:     #f1f5f9;       /* bg-slate-100 → elevated sections */
+    --color-surface-hover:      #f8fafc;       /* hover state */
+
+    /* Borders */
+    --color-border:             #e2e8f0;       /* border-slate-200 */
+    --color-border-subtle:      #f1f5f9;       /* border-slate-100 */
+    --color-border-strong:      #cbd5e1;       /* border-slate-300 */
+
+    /* Text */
+    --color-text-primary:       #0f172a;       /* slate-900 */
+    --color-text-secondary:     #475569;       /* slate-600 */
+    --color-text-muted:         #94a3b8;       /* slate-400 */
+    --color-text-heading:       #1e293b;       /* slate-800 */
+
+    /* Input / Form */
+    --color-input-bg:           #ffffff;
+    --color-input-border:       #e2e8f0;
+    --color-input-text:         #0f172a;
+    --color-input-placeholder:  #94a3b8;
+    --color-input-focus-border: #3b82f6;
+
+    /* Table */
+    --color-table-header-bg:    #f8fafc;
+    --color-table-header-text:  #64748b;
+    --color-table-row-hover:    #f8fafc;
+    --color-table-border:       #e2e8f0;
+
+    /* Scrollbar */
+    --color-scrollbar-thumb:    rgba(148, 163, 184, 0.4);
+}
+
+/* ============================================================
+   DARK MODE TOKEN OVERRIDES
+   Cukup satu titik — semua komponen ikut otomatis
+   ============================================================ */
+.dark {
+    /* Surfaces */
+    --color-surface:            #1e293b;       /* slate-900 */
+    --color-surface-secondary:  #0f172a;       /* slate-950 */
+    --color-surface-raised:     #334155;       /* slate-700 */
+    --color-surface-hover:      #334155;       /* hover state */
+
+    /* Borders */
+    --color-border:             #334155;       /* slate-700 */
+    --color-border-subtle:      #1e293b;       /* slate-800 */
+    --color-border-strong:      #475569;       /* slate-600 */
+
+    /* Text */
+    --color-text-primary:       #f1f5f9;       /* slate-100 */
+    --color-text-secondary:     #94a3b8;       /* slate-400 */
+    --color-text-muted:         #64748b;       /* slate-500 */
+    --color-text-heading:       #e2e8f0;       /* slate-200 */
+
+    /* Input / Form */
+    --color-input-bg:           #0f172a;
+    --color-input-border:       #334155;
+    --color-input-text:         #f1f5f9;
+    --color-input-placeholder:  #64748b;
+    --color-input-focus-border: #60a5fa;
+
+    /* Table */
+    --color-table-header-bg:    #0f172a;
+    --color-table-header-text:  #94a3b8;
+    --color-table-row-hover:    #1e293b;
+    --color-table-border:       #334155;
+
+    /* Scrollbar */
+    --color-scrollbar-thumb:    rgba(71, 85, 105, 0.6);
+}
+
+/* ============================================================
+   GLOBAL DARK MODE STYLES — Form Elements, Inputs, Selects
+   Berlaku otomatis untuk semua <input>, <select>, <textarea>
+   tanpa perlu menambahkan class di setiap file JSX
+   ============================================================ */
+@layer base {
+    /* Semua input, select, textarea */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+    select,
+    textarea {
+        background-color: var(--color-input-bg);
+        border-color: var(--color-input-border);
+        color: var(--color-input-text);
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--color-input-placeholder);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--color-input-focus-border);
+        outline: none;
+    }
+
+    /* Option di dalam select */
+    .dark select option {
+        background-color: #0f172a;
+        color: #f1f5f9;
+    }
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.6);
+}
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scrollbar-thumb) transparent;
+}
+
+/* ============================================================
+   BADGE GLOW ANIMATIONS (Sidebar status badges)
+   ============================================================ */
+@keyframes glow-emerald {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+    50%       { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+}
+@keyframes glow-amber {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55); }
+    50%       { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+}
+@keyframes glow-rose {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.6); }
+    50%       { box-shadow: 0 0 0 5px rgba(225, 29, 72, 0); }
+}
+
+.badge-glow-emerald { animation: glow-emerald 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.badge-glow-amber   { animation: glow-amber 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.badge-glow-rose    { animation: glow-rose 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* ============================================================
+   UTILITY CLASSES menggunakan Design Tokens
+   Digunakan di JSX sebagai shorthand dark-mode-aware classes
+   ============================================================ */
+.card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+}
+.card-secondary {
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-border);
+}
+.text-primary   { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-muted     { color: var(--color-text-muted); }
+.border-theme   { border-color: var(--color-border); }
+.border-subtle  { border-color: var(--color-border-subtle); }
+.bg-surface     { background-color: var(--color-surface); }
+.bg-surface-secondary { background-color: var(--color-surface-secondary); }
+.bg-surface-hover:hover { background-color: var(--color-surface-hover); }

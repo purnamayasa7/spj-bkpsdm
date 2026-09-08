@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ActivityExport;
 
 
+use Inertia\Inertia;
+
 class ActivityController extends Controller
 {
     public function index(Request $request)
@@ -17,8 +19,12 @@ class ActivityController extends Controller
         $user = Auth::user();
 
         if (!$request->filled('date_from') && !$request->filled('date_to')) {
-            return view('pages.activity.index', [
-                'activities' => collect([])
+            return Inertia::render('Activity/Index', [
+                'activities' => [],
+                'filters' => [
+                    'date_from' => '',
+                    'date_to' => '',
+                ]
             ]);
         }
 
@@ -32,13 +38,20 @@ class ActivityController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        if ($user->role === 'bidang') {
+        $isKeuangan = $user->role && strtolower($user->role->name) === 'keuangan';
+        if (!$isKeuangan) {
             $query->where('user_id', $user->id);
         }
 
         $activities = $query->get();
 
-        return view('pages.activity.index', compact('activities'));
+        return Inertia::render('Activity/Index', [
+            'activities' => $activities,
+            'filters' => [
+                'date_from' => $request->date_from ?? '',
+                'date_to' => $request->date_to ?? '',
+            ]
+        ]);
     }
 
     public function exportPDF(Request $request)

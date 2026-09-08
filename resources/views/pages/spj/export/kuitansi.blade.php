@@ -135,29 +135,32 @@
             <tr>
                 <td>NIP. 197612281996011001</td>
                 <td>
-                    @if ($pptk == 'Ni Komang Sutrisni, S.Pd')
+                    @if (!empty($nip_pptk))
+                        NIP. {{ $nip_pptk }}
+                    @elseif ($pptk == 'Ni Komang Sutrisni, S.Pd')
                         NIP. 197207061993032012
-                        @elseif ($pptk == 'Made Herry Hermawan, S.STP., M.A.P')
+                    @elseif ($pptk == 'Made Herry Hermawan, S.STP., M.A.P')
                         NIP. 198702052006021001
-                        @elseif ($pptk == 'I Gede Arsana, S.Sos')
+                    @elseif ($pptk == 'I Gede Arsana, S.Sos')
                         NIP. 196802022006041021
-                        @elseif ($pptk == 'I Gusti Kade Ria Prisahatna, SH')
+                    @elseif ($pptk == 'I Gusti Kade Ria Prisahatna, SH')
                         NIP. 198703122015031005
                     @endif
                 </td>
                 <td>NIP. 198205022009022001</td>
                 <td>
-                    @if ($penerima == 'Ni Komang Sutrisni, S.Pd')
+                    @if (!empty($nip_penerima))
+                        NIP. {{ $nip_penerima }}
+                    @elseif ($penerima == 'Ni Komang Sutrisni, S.Pd')
                         NIP. 197207061993032012
-                        @elseif ($penerima == 'Made Herry Hermawan, S.STP., M.A.P')
+                    @elseif ($penerima == 'Made Herry Hermawan, S.STP., M.A.P')
                         NIP. 198702052006021001
-                        @elseif ($penerima == 'I Gede Arsana, S.Sos')
+                    @elseif ($penerima == 'I Gede Arsana, S.Sos')
                         NIP. 196802022006041021
-                        @elseif ($penerima == 'I Gusti Kade Ria Prisahatna, SH')
+                    @elseif ($penerima == 'I Gusti Kade Ria Prisahatna, SH')
                         NIP. 198703122015031005
-                        @elseif ($penerima == 'Kadek Meilani, S.E')
+                    @elseif ($penerima == 'Kadek Meilani, S.E')
                         NIP. 198205022009022001
-                        @else
                     @endif
                 </td>
             </tr>

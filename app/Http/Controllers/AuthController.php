@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
 
 class AuthController extends Controller
 {
@@ -15,7 +16,7 @@ class AuthController extends Controller
             return redirect('/dashboard');
         }
 
-        return view('pages.auth.login');
+        return Inertia::render('Auth/Login');
     }
 
     public function authenticate(Request $request)
@@ -43,7 +44,7 @@ class AuthController extends Controller
 
     public function registerView()
     {
-        return view('pages.auth.register');
+        return Inertia::render('Auth/Register');
     }
 
     public function register(Request $request)

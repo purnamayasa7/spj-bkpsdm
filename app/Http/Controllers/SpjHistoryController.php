@@ -6,6 +6,8 @@ use App\Models\Spj;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Inertia\Inertia;
+
 class SpjHistoryController extends Controller
 {
     public function index()
@@ -15,20 +17,23 @@ class SpjHistoryController extends Controller
 
         $query = Spj::whereYear('created_at', $year);
 
-        if ($user->role->name !== 'Keuangan') {
+        if ($user->role && $user->role->name !== 'Keuangan') {
             $query->where('Bidang', $user->bidang);
         }
 
         $spj = $query->latest()->get();
 
-        return view('pages.spj.history.history', compact('spj', 'year'));
+        return Inertia::render('History/Index', [
+            'spj' => $spj,
+            'year' => (string) $year,
+        ]);
     }
 
     public function show(Spj $spj)
     {
         $user = Auth::user();
 
-        if ($user->role->name !== 'Keuangan' && $spj->bidang !== $user->bidang) {
+        if ($user->role && $user->role->name !== 'Keuangan' && $spj->bidang !== $user->bidang) {
             abort(403, 'Anda tidak memiliki akses ke SPJ ini.');
         }
 
@@ -37,6 +42,10 @@ class SpjHistoryController extends Controller
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return view('pages.spj.history.history-detail', compact('spj', 'histories'));
+        return Inertia::render('History/Show', [
+            'spj' => $spj,
+            'histories' => $histories,
+        ]);
     }
 }
+
