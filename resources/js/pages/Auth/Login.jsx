@@ -40,7 +40,7 @@ export default function Login() {
                         htmlFor="nip"
                         className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5"
                     >
-                        Nomor Induk Pegawai (NIP)
+                        Nomor Induk Pegawai (NIP) / Username
                     </label>
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
@@ -51,9 +51,8 @@ export default function Login() {
                             type="text"
                             name="nip"
                             value={data.nip}
-                            maxLength={18}
                             onChange={(e) => setData('nip', e.target.value)}
-                            placeholder="Contoh: 198501012010011001"
+                            placeholder="Masukkan NIP atau username..."
                             className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#2a4574]/20 focus:border-[#2a4574] transition-all"
                             required
                             autoFocus

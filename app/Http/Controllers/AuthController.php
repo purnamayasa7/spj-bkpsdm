@@ -26,7 +26,7 @@ class AuthController extends Controller
         }
 
         $credentials = $request->validate([
-            'nip' => 'required|digits:18',
+            'nip' => 'required|string',
             'password' => 'required',
         ]);
 
