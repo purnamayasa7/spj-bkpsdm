@@ -225,6 +225,7 @@ class SpjController extends Controller
         $spj = Spj::findOrFail($id);
 
         $request->validate([
+            'pptk' => 'nullable|string|max:100',
             'nama_dokumen_baru.*' => 'nullable|string|max:100',
             'dokumen_baru.*' => 'nullable|file|mimes:pdf|max:5120', // hanya izinkan PDF maks 5MB
         ]);
