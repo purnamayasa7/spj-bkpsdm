@@ -84,7 +84,14 @@ class SpjController extends Controller
             'kelengkapan_spk' => ['nullable', 'string'],
             'keterangan' => ['nullable', 'string'],
             'status' => ['required', 'max:10'],
+            'dokumen' => ['required', 'array', 'min:1'],
+            'dokumen.*' => ['file', 'mimes:pdf', 'max:5120'],
+        ], [
+            'dokumen.required' => 'Kelengkapan berkas masih kosong. Harap unggah minimal 1 dokumen kelengkapan SPJ.',
+            'dokumen.min' => 'Kelengkapan berkas masih kosong. Harap unggah minimal 1 dokumen kelengkapan SPJ.',
         ]);
+
+        unset($validated['dokumen']);
 
         $tanggal = now()->format('dmY');
 
