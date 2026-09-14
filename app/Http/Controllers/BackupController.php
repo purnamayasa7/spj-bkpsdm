@@ -36,11 +36,26 @@ class BackupController extends Controller
 
     public function runBackup()
     {
-        $dbHost = env('DB_HOST');
-        $dbPort = env('DB_PORT');
-        $dbUser = env('DB_USERNAME');
-        $dbPass = env('DB_PASSWORD');
-        $dbName = env('DB_DATABASE');
+        $dbHost = config('database.connections.mysql.host', '127.0.0.1');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbUser = config('database.connections.mysql.username', 'root');
+        $dbPass = config('database.connections.mysql.password', '');
+        $dbName = config('database.connections.mysql.database');
+
+        if (empty($dbName)) {
+            return back()->with('error', 'Nama basis data tidak ditemukan dalam konfigurasi sistem.');
+        }
+
+        // Cari lokasi binary mysqldump jika di Linux
+        $dumpBinary = 'mysqldump';
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            foreach (['/usr/bin/mysqldump', '/usr/local/bin/mysqldump', '/usr/bin/mariadb-dump'] as $binaryPath) {
+                if (file_exists($binaryPath) && is_executable($binaryPath)) {
+                    $dumpBinary = $binaryPath;
+                    break;
+                }
+            }
+        }
 
         // Nama file
         $fileName = 'backup-' . $dbName . '-' . date('Y-m-d-H-i-s') . '.sql';
@@ -48,28 +63,55 @@ class BackupController extends Controller
 
         // Lokasi sementara
         $tempPath = storage_path('app/temp-backup/');
-        if (!file_exists($tempPath)) mkdir($tempPath, 0777, true);
-
-        $sqlPath = $tempPath . $fileName;
-        $zipPath = $tempPath . $zipName;
-
-        // Command mysqldump
-        $command = sprintf(
-            'mysqldump --host=%s --port=%s --user=%s --password="%s" %s > %s',
-            $dbHost,
-            $dbPort,
-            $dbUser,
-            $dbPass,
-            $dbName,
-            $sqlPath
-        );
-
-        // Jalankan backup
-        exec($command, $output, $returnVar);
-
-        if ($returnVar !== 0) {
-            return back()->with('error', 'Gagal menjalankan mysqldump. Periksa konfigurasi server.');
+        if (!file_exists($tempPath)) {
+            mkdir($tempPath, 0775, true);
         }
+
+        $sqlPath      = $tempPath . $fileName;
+        $zipPath      = $tempPath . $zipName;
+        $errorLogPath = $tempPath . 'dump-error.log';
+
+        $cmd = [
+            $dumpBinary,
+            '--host=' . $dbHost,
+            '--port=' . (string) $dbPort,
+            '--user=' . $dbUser,
+            '--no-tablespaces',
+            $dbName,
+        ];
+
+        $descriptorspec = [
+            0 => ['pipe', 'r'],
+            1 => ['file', $sqlPath, 'w'],
+            2 => ['file', $errorLogPath, 'w'],
+        ];
+
+        // Gunakan variabel lingkungan MYSQL_PWD agar password tidak bocor ke process list
+        // dan tidak rusak akibat karakter khusus shell
+        putenv("MYSQL_PWD={$dbPass}");
+        $process = proc_open($cmd, $descriptorspec, $pipes, null, null);
+
+        $returnVar = -1;
+        if (is_resource($process)) {
+            if (isset($pipes[0]) && is_resource($pipes[0])) {
+                fclose($pipes[0]);
+            }
+            $returnVar = proc_close($process);
+        }
+
+        if ($returnVar !== 0 || !file_exists($sqlPath) || filesize($sqlPath) === 0) {
+            $errorMsg = file_exists($errorLogPath) ? trim(file_get_contents($errorLogPath)) : '';
+            if (empty($errorMsg)) {
+                $errorMsg = 'Pastikan utilitas mysqldump terpasang di server (misal: sudo apt install mysql-client) dan user database memiliki hak akses.';
+            }
+
+            @unlink($sqlPath);
+            @unlink($errorLogPath);
+
+            return back()->with('error', 'Gagal menjalankan mysqldump: ' . $errorMsg);
+        }
+
+        @unlink($errorLogPath);
 
         // ZIP file
         $zip = new \ZipArchive;
@@ -77,11 +119,18 @@ class BackupController extends Controller
             $zip->addFile($sqlPath, $fileName);
             $zip->close();
         } else {
-            return back()->with('error', 'Gagal membuat ZIP backup.');
+            @unlink($sqlPath);
+            return back()->with('error', 'Gagal membuat berkas arsip ZIP backup.');
         }
 
         // Hapus file SQL setelah di-zip
-        unlink($sqlPath);
+        @unlink($sqlPath);
+
+        // Simpan juga salinan di storage/app/Laravel agar riwayat backup di dashboard ter-update
+        try {
+            Storage::disk('local')->makeDirectory('Laravel');
+            Storage::disk('local')->put('Laravel/' . $zipName, file_get_contents($zipPath));
+        } catch (\Exception $e) {}
 
         // Download ZIP
         return response()->download($zipPath)->deleteFileAfterSend(true);
