@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/AuthenticatedLayout';
 import {
@@ -36,7 +36,7 @@ export default function Review({ spj, kelengkapan = [] }) {
     const [docReasons, setDocReasons] = useState(() => {
         const initial = {};
         kelengkapan.forEach((doc) => {
-            initial[doc.id] = doc.alasan || '';
+            initial[doc.id] = (doc.alasan && doc.alasan !== '-') ? doc.alasan : '';
         });
         return initial;
     });
@@ -72,9 +72,6 @@ export default function Review({ spj, kelengkapan = [] }) {
 
     const handleStatusChange = (id, newStatus) => {
         setDocStatuses((prev) => ({ ...prev, [id]: newStatus }));
-        if (newStatus === 'Valid') {
-            setDocReasons((prev) => ({ ...prev, [id]: '-' }));
-        }
     };
 
     const handleReasonChange = (id, text) => {
@@ -87,7 +84,8 @@ export default function Review({ spj, kelengkapan = [] }) {
 
         const payload = { keterangan, status: docStatuses };
         kelengkapan.forEach((doc) => {
-            payload[`alasan_${doc.id}`] = docReasons[doc.id] || '-';
+            const val = docReasons[doc.id];
+            payload[`alasan_${doc.id}`] = (val && typeof val === 'string' && val.trim() !== '') ? val.trim() : '-';
         });
 
         router.post(`/keuangan/spj/${spj.id}/review`, payload, {
@@ -364,13 +362,12 @@ export default function Review({ spj, kelengkapan = [] }) {
                                                         }
                                                         placeholder={
                                                             isValid
-                                                                ? 'Berkas sudah valid'
+                                                                ? 'Catatan dokumen valid (opsional)...'
                                                                 : 'Tuliskan catatan perbaikan berkas ini...'
                                                         }
-                                                        disabled={isValid}
                                                         className={`w-full px-3 py-1.5 rounded-lg text-xs border focus:outline-hidden transition-colors ${
                                                             isValid
-                                                                ? 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-slate-700 cursor-not-allowed'
+                                                                ? 'bg-emerald-50/30 dark:bg-emerald-950/20 text-slate-800 dark:text-slate-100 border-emerald-200 dark:border-emerald-800/60 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 dark:focus:ring-emerald-900/30 placeholder:text-slate-400 dark:placeholder:text-slate-500'
                                                                 : 'bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-rose-300 dark:border-rose-700 focus:border-rose-500 focus:ring-2 focus:ring-rose-100 dark:focus:ring-rose-900/30 placeholder:text-rose-300 dark:placeholder:text-rose-700'
                                                         }`}
                                                     />
