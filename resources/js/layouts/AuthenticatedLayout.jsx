@@ -137,7 +137,7 @@ export default function AuthenticatedLayout({ children, title }) {
             if (typeof window !== 'undefined') {
                 return document.documentElement.classList.contains('dark');
             }
-        } catch {}
+        } catch { }
         return false;
     });
 
@@ -152,7 +152,7 @@ export default function AuthenticatedLayout({ children, title }) {
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('theme', 'light');
             }
-        } catch {}
+        } catch { }
     };
 
     const toggleSidebarCollapse = () => {
@@ -950,7 +950,7 @@ export default function AuthenticatedLayout({ children, title }) {
                         <div className="flex items-center gap-1.5 text-center sm:text-right">
                             <span>Developed by</span>
                             <a
-                                href="https://bkpsdm.bulelengkab.go.id"
+                                href="https://www.linkedin.com/in/kadek-purnamayasa-bba44a16b"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="font-semibold text-[#2a4574] dark:text-blue-400 hover:underline transition-colors"
