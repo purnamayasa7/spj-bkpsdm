@@ -929,6 +929,37 @@ export default function AuthenticatedLayout({ children, title }) {
                 <main className="flex-1 p-4 sm:p-6 lg:p-8">
                     {children}
                 </main>
+
+                {/* Footer */}
+                <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xs px-4 sm:px-6 lg:px-8 py-3.5 transition-colors">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-slate-500 dark:text-slate-400">
+                        {/* Kiri: BKPSDM Buleleng */}
+                        <div className="flex items-center gap-1.5 text-center sm:text-left">
+                            <span>&copy; {new Date().getFullYear()}</span>
+                            <a
+                                href="https://bkpsdm.bulelengkab.go.id"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-semibold text-slate-700 dark:text-slate-200 hover:text-[#2a4574] dark:hover:text-blue-400 transition-colors"
+                            >
+                                BKPSDM Kabupaten Buleleng
+                            </a>
+                        </div>
+
+                        {/* Kanan: Developed by Prakom PPI */}
+                        <div className="flex items-center gap-1.5 text-center sm:text-right">
+                            <span>Developed by</span>
+                            <a
+                                href="https://bkpsdm.bulelengkab.go.id"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="font-semibold text-[#2a4574] dark:text-blue-400 hover:underline transition-colors"
+                            >
+                                Prakom PPI
+                            </a>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
     );
